@@ -10,8 +10,8 @@ const Login = () => {
         <div className="hidden md:flex md:w-1/2 bg-indigo-600 text-white p-10 flex-col justify-center">
           <h1 className="text-4xl font-bold mb-4">TradeFlow</h1>
           <p className="text-lg opacity-90">
-            Manage quotes, jobs, payments & operations in one powerful system.
-          </p>
+            Manage quotes, jobs, payments & operations in one powerful systems.
+          </p> 
 
           <div className="mt-10 space-y-2 text-sm opacity-80">
             <p>✔ Smart workflow automation</p>
