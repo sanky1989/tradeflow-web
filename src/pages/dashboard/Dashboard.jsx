@@ -1,42 +1,12 @@
-import React from "react";
-import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
+import React, { useState, useRef, useEffect } from "react";
+import RecentTable from "../../components/dashboard/RecentTable";
+import StatsGrid from "../../components/dashboard/StatsGrid";
 
-const Dashboard = () => {
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    window.location.href = "/login";
-  };
-
-  const user = JSON.parse(localStorage.getItem("user"));
-
+export default function Dashboard() {
   return (
-    <Box>
-      <AppBar position="static">
-        <Toolbar>
-          <Typography variant="h6" sx={{ flexGrow: 1 }}>
-            TradeFlow Dashboard
-          </Typography>
-
-          <Typography sx={{ mr: 2 }}>
-            {user?.FullName}
-          </Typography>
-
-          <Button color="inherit" onClick={handleLogout}>
-            Logout
-          </Button>
-        </Toolbar>
-      </AppBar>
-
-      <Box p={3}>
-        <Typography variant="h4">Welcome 👋</Typography>
-        <Typography sx={{ mt: 2 }}>
-          You are successfully logged in.
-        </Typography>
-      </Box>
-    </Box>
+          <>
+          <StatsGrid />
+          <RecentTable />
+          </>
   );
-};
-
-export default Dashboard;
+}
