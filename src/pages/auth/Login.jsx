@@ -89,7 +89,7 @@ const Login = () => {
       <div className="bg-white shadow-2xl rounded-2xl w-full max-w-5xl flex flex-col md:flex-row overflow-hidden">
         
         {/* LEFT SIDE */}
-        <div className="hidden md:flex md:w-1/2 bg-accent text-white p-10 flex-col justify-center">
+        <div className="hidden md:flex md:w-1/2 bg-gray-200 text-black p-10 flex-col justify-center">
           <h1 className="text-4xl font-bold mb-4">TradeFlow</h1>
           <p className="text-lg opacity-90">
             Manage quotes, jobs, payments & operations in one powerful system.
