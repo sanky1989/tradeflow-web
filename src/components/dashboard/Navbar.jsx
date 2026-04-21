@@ -31,11 +31,11 @@ export default function Navbar({ setSidebarOpen }) {
   };
 
   return (
-    <header className="sticky top-0 z-30 flex h-[72px] items-center justify-between border-gray-300 border-b border-border bg-white px-8 backdrop-blur-md font-sans">
+    <header className="sticky top-0 z-30 flex h-[72px] items-center justify-between border-gray-300 border-b border-border  bg-white px-4 md:px-8 backdrop-blur-md font-sans">
       <div className="flex items-center gap-4">
         <button 
           onClick={() => setSidebarOpen(true)}
-          className="flex h-10 w-10 items-center justify-center rounded-lg border border-border bg-card text-text-muted transition-colors hover:bg-sidebar md:hidden cursor-pointer"
+          className="flex h-10 w-10 items-center justify-center rounded-lg border border-border border-gray-300 bg-white text-text-muted transition-colors hover:bg-sidebar md:hidden cursor-pointer"
         >
           <Menu size={20} />
         </button>
@@ -73,7 +73,7 @@ export default function Navbar({ setSidebarOpen }) {
                 initial={{ opacity: 0, y: 10, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                className="absolute right-0 mt-3 w-56 origin-top-right rounded-xl border border-gray-300 border-border bg-white p-2 shadow-2xl"
+                className="absolute right-0 mt-3 mobile_proFile w-56 origin-top-right rounded-xl border border-gray-300 border-border bg-white p-2 shadow-2xl"
               >
                 <div className="px-3 py-3 border-b border-border border-gray-300 mb-1">
                   <p className="text-[10px] font-bold text-black uppercase tracking-widest leading-none">Account</p>

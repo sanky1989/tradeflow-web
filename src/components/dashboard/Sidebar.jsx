@@ -38,7 +38,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
         <div className="flex h-full flex-col">
 
           {/* Logo */}
-          <div className="flex h-[72px] items-center border-b border-gray-300 border-border px-6">
+          <div className="flex h-[72px] items-center border-b border-gray-300 border-border px-4 md:px-6">
             <div className="flex items-center gap-3">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent shadow-lg shadow-accent/20">
                 <TrendingUp className="text-white" size={18} />
@@ -50,7 +50,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 space-y-1 overflow-y-auto px-4 py-8">
+          <nav className="flex-1 space-y-1 overflow-y-auto px-4 py-6">
             {NAV_ITEMS.map((item) => {
               const isActive = location.pathname.startsWith(pathMap[item.id]);
 
@@ -65,15 +65,15 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
                     "flex w-full items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium transition-all group cursor-pointer",
                     isActive
                       ? "bg-card text-text-main"
-                      : "text-text-muted"
+                      : "text-black"
                   )}
                 >
                   <item.icon
                     className={cn(
                       "transition-colors",
                       isActive
-                        ? "text-accent"
-                        : "text-text-muted"
+                        ? "text-white"
+                        : "text-black"
                     )}
                     size={18}
                   />

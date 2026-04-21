@@ -12,7 +12,7 @@ const RECENT_QUOTES = [
 export default function RecentTable() {
   return (
     <div className="rounded-xl border border-border border-gray-300 bg-white overflow-hidden">
-                <div className="p-8 border-b border-border border-gray-300">
+                <div className="p-6 border-b border-border border-gray-300">
                   <h3 className="text-[15px] font-semibold text-gray-900 leading-none">Recent Activity</h3>
                 </div>
                 <div className="overflow-x-auto">

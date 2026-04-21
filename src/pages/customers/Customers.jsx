@@ -255,15 +255,14 @@ export default function Customers() {
           { label: "Active Now", value: "412", trend: "-2%" },
           { label: "Lifetime Spent", value: "$142.5k", trend: "+18%" },
         ].map((stat) => (
-          <div key={stat.label} className="rounded-xl border border-border bg-card p-6">
-            <p className="text-[11px] font-bold text-text-muted uppercase tracking-widest leading-none mb-3">{stat.label}</p>
+          <div key={stat.label} className="rounded-xl border border-border border-gray-300 bg-white p-6">
+            <p className="text-[14px] font-bold text-black tracking-widest leading-none mb-3">{stat.label}</p>
             <div className="flex items-end justify-between">
-              <h3 className="font-sans text-2xl font-bold tracking-tight text-text-main">{stat.value}</h3>
+              <h3 className="font-sans text-2xl font-bold tracking-tight text-black">{stat.value}</h3>
               <span className={cn(
                 "text-[11px] font-bold px-1.5 py-0.5 rounded",
                 stat.trend.startsWith('+') ? "bg-success/15 text-success" : "bg-rose-500/15 text-rose-500"
               )}>
-                {stat.trend}
               </span>
             </div>
           </div>
