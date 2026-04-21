@@ -7,7 +7,7 @@ export default function DashboardLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="flex h-screen bg-bg font-sans selection:bg-accent/20 selection:text-accent overflow-hidden">
+    <div className="flex h-screen bg-white text-black font-sans selection:bg-accent/20 selection:text-accent overflow-hidden">
       
       {/* Sidebar */}
       <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />

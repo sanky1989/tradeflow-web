@@ -25,12 +25,13 @@ export default function Navbar({ setSidebarOpen }) {
   //logout
   const handleLogout = () => {
     localStorage.removeItem("token");
+    sessionStorage.removeItem("token");
     setUser(null);
     navigate("/", { replace: true });
   };
 
   return (
-    <header className="sticky top-0 z-30 flex h-[72px] items-center justify-between border-b border-border bg-bg/80 px-8 backdrop-blur-md font-sans">
+    <header className="sticky top-0 z-30 flex h-[72px] items-center justify-between border-gray-300 border-b border-border bg-white px-8 backdrop-blur-md font-sans">
       <div className="flex items-center gap-4">
         <button 
           onClick={() => setSidebarOpen(true)}
@@ -38,11 +39,11 @@ export default function Navbar({ setSidebarOpen }) {
         >
           <Menu size={20} />
         </button>
-        <h1 className="text-lg font-semibold text-text-main">Overview</h1>
+        <h1 className="text-lg font-semibold text-black">Overview</h1>
       </div>
 
       <div className="flex items-center gap-4 md:gap-6">
-        <div className="hidden items-center gap-3 rounded-xl bg-card border border-border px-4 py-1.5 md:flex">
+        <div className="hidden items-center gap-3 rounded-xl bg-white border border-gray-300 border-border px-4 py-1.5 md:flex">
           <Search className="text-text-muted" size={16} />
           <input 
             type="text" 
@@ -51,17 +52,17 @@ export default function Navbar({ setSidebarOpen }) {
           />
         </div>
 
-        <div className="h-6 w-px bg-border hidden sm:block" />
+       
 
         <div className="relative" ref={dropdownRef}>
           <button 
             onClick={() => setDropdownOpen(!dropdownOpen)}
-            className="group flex items-center gap-3 bg-card border border-border py-1.5 px-3 rounded-full hover:bg-sidebar transition-colors cursor-pointer"
+            className="group flex items-center gap-3 bg-white border-gray-300 border border-border py-1.5 px-3 rounded-full transition-colors cursor-pointer"
           >
-            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-accent to-[#B388FF] text-[11px] font-bold text-white shadow-lg shadow-accent/20">
+            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-accent to-[#B388FF] text-[11px] font-bold text-black shadow-lg shadow-accent/20">
               {initials}
             </div>
-            <span className="text-sm font-medium text-text-main hidden sm:inline">
+            <span className="text-sm font-medium text-black hidden sm:inline">
               {user?.FullName || "User"}
             </span>
           </button>
@@ -72,23 +73,23 @@ export default function Navbar({ setSidebarOpen }) {
                 initial={{ opacity: 0, y: 10, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                className="absolute right-0 mt-3 w-56 origin-top-right rounded-xl border border-border bg-card p-2 shadow-2xl"
+                className="absolute right-0 mt-3 w-56 origin-top-right rounded-xl border border-gray-300 border-border bg-white p-2 shadow-2xl"
               >
-                <div className="px-3 py-3 border-b border-border mb-1">
-                  <p className="text-[10px] font-bold text-text-muted uppercase tracking-widest leading-none">Account</p>
-                  <p className="text-sm font-bold mt-2 text-text-main truncate">
+                <div className="px-3 py-3 border-b border-border border-gray-300 mb-1">
+                  <p className="text-[10px] font-bold text-black uppercase tracking-widest leading-none">Account</p>
+                  <p className="text-sm font-bold mt-2 text-black truncate">
                     {user?.FullName}
                   </p>
                 </div>
 
-                <button className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-text-muted transition-colors hover:bg-bg hover:text-text-main cursor-pointer border-none bg-transparent">
+                <button className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-black transition-colors  cursor-pointer border-none bg-transparent">
                   <User size={16} />
                   View Profile
                 </button>
 
                 <button 
                   onClick={handleLogout}
-                  className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-rose-500 transition-colors hover:bg-rose-500/10 cursor-pointer border-none bg-transparent"
+                  className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-black transition-colors cursor-pointer border-none bg-transparent"
                 >
                   <LogOut size={16} />
                   Log Out

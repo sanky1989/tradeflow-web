@@ -31,14 +31,14 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
     <>
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-50 w-[240px] bg-sidebar border-r border-border text-text-main transition-transform duration-300 ease-in-out md:static md:translate-x-0",
+          "fixed inset-y-0 left-0 z-50 w-[240px]  bg-white border-r border-border border-gray-300 text-text-main transition-transform duration-300 ease-in-out md:static md:translate-x-0",
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
         <div className="flex h-full flex-col">
 
           {/* Logo */}
-          <div className="flex h-[72px] items-center border-b border-border px-6">
+          <div className="flex h-[72px] items-center border-b border-gray-300 border-border px-6">
             <div className="flex items-center gap-3">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent shadow-lg shadow-accent/20">
                 <TrendingUp className="text-white" size={18} />
@@ -73,7 +73,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
                       "transition-colors",
                       isActive
                         ? "text-accent"
-                        : "text-text-muted group-hover:text-text-main"
+                        : "text-text-muted"
                     )}
                     size={18}
                   />

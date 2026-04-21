@@ -59,17 +59,14 @@ export default function StatsGrid() {
       {stats.map((stat) => (
         <div
           key={stat.title}
-          className="group relative rounded-xl border border-border bg-card p-6 transition-all hover:border-accent/30"
+          className="group relative rounded-xl border text-text-main border-border border-gray-300 bg-white p-6 transition-all"
         >
           <div className="flex items-center justify-between mb-3 text-text-muted">
-            <p className="text-[11px] font-bold uppercase tracking-widest leading-none">{stat.title}</p>
-            <stat.icon size={14} className="opacity-50" />
+            <p className="text-[14px] font-bold tracking-widest leading-none text-black">{stat.title}</p>
+            <stat.icon size={14} className="" />
           </div>
           <div className="flex items-end justify-between">
-            <h3 className="font-sans text-2xl font-bold tracking-tight text-text-main">{stat.value}</h3>
-            <span className="text-[10px] font-semibold text-text-muted mb-1">
-              of {stat.max} limit
-            </span>
+            <h3 className="font-sans text-2xl font-bold tracking-tight text-black">{stat.value}</h3>
           </div>
         </div>
       ))}

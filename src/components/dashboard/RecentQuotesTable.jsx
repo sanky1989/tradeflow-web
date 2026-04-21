@@ -2,7 +2,7 @@ import { cn } from "../../lib/utils";
 
 export default function RecentQuotesTable({ RECENT_QUOTES }) {
   return (
-    <div className="rounded-xl border border-border bg-card overflow-hidden">
+    <div className="rounded-xl border border-border bg-white overflow-hidden">
       <div className="p-8 border-b border-border">
         <h3 className="text-[15px] font-semibold text-text-main">Recent Activity</h3>
       </div>
@@ -10,7 +10,7 @@ export default function RecentQuotesTable({ RECENT_QUOTES }) {
       <div className="overflow-x-auto">
         <table className="w-full text-left">
           <thead>
-            <tr className="border-b border-border bg-sidebar/50">
+            <tr className="border-b border-border bg-white">
               <th className="px-8 py-4 text-[11px] font-bold text-text-muted">Client</th>
               <th className="px-8 py-4 text-[11px] font-bold text-text-muted">Status</th>
               <th className="px-8 py-4 text-[11px] font-bold text-text-muted">Value</th>

@@ -25,3 +25,16 @@ export const getTenantUsage = async () => {
     throw error;
   }
 };
+
+export const getashboard = async () => {
+  try {
+    const res = await api.get("/dashboard/summary");
+    if (!res.data.Success) {
+      throw new Error(res.data.Message || "Failed to fetch usage");
+    }
+    return res.data;
+  } catch (error) {
+    console.error("Tenant Usage Error:", error);
+    throw error;
+  }
+};
