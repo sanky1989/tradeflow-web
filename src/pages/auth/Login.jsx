@@ -122,7 +122,7 @@ const Login = () => {
               {loading ? "Logging in..." : "Login"}
             </button>
           </form>
-
+  
           <p className="text-xs text-gray-400 mt-6 text-center">
             © 2026 TradeFlow. All rights reserved.
           </p>
