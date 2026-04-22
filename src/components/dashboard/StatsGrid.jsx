@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { FileText, Users, Package } from "lucide-react";
-import { cn } from "../../lib/utils";
+import { FileText, FileEdit, Send, Wallet, DollarSign, CheckCircle, Users, Package } from "lucide-react";
 import { getTenantLimits, getTenantUsage } from "../../services/tenantService";
+import { getDashboardSummary, getRecentQuotes } from "../../services/dashboardService";
 import Loader from "../common/Loader";
 
 export default function StatsGrid() {
@@ -11,36 +11,51 @@ export default function StatsGrid() {
   useEffect(() => {
     const loadStats = async () => {
       try {
-        const limitsRes = await getTenantLimits();
-        const usageRes = await getTenantUsage();
-        const limits = limitsRes?.Data;
-        const usage = usageRes?.Data;
-
+        const UsageData  = await getRecentQuotes();
+        console.log('UsageData',UsageData );
+        const SummaryData  = await getDashboardSummary();
+        const data = SummaryData?.Data || {};
+        console.log('datacheck',SummaryData );
         setStats([
           {
-            title: "Quotes This Month",
-            value: usage?.QuotesThisMonth || 0,
-            change: "",
-            max: limits?.MaxQuotesPerMonth || 0,
-            icon: FileText,
+          title: "Total Customers",
+          value: data.TotalCustomers || 0,
+          icon: Users,
           },
           {
-            title: "Active Users  ",
-            value: usage?.CurrentUsers || 0,
-            max: limits?.MaxUsers || 0,
-            icon: Users,
-          },
-          {
-            title: "Suppliers",
-            value: usage?.CurrentSuppliers || 0,
-            max: limits?.MaxSuppliers || 0,
+            title: "Total Products",
+            value: data.TotalProducts || 0,
             icon: Package,
           },
           {
-            title: "Installers",
-            value: usage?.CurrentInstallers || 0,
-            max: limits?.MaxInstallers || 0,
-            icon: Users,
+            title: "Total Quotes",
+            value: data.TotalQuotes || 0,
+            icon: FileText,
+          },
+          {
+            title: "Draft Quotes",
+            value: data.DraftQuotes || 0,
+            icon: FileEdit,
+          },
+          {
+            title: "Sent Quotes",
+            value: data.SentQuotes || 0,
+            icon: Send,
+          },
+          {
+            title: "Completed Quotes",
+            value: data.CompletedQuotes || 0,
+            icon: CheckCircle,
+          },
+          {
+            title: "Total Quoted Value",
+            value: data.TotalQuotedValue || 0,
+            icon: DollarSign,
+          },
+          {
+            title: "Total Paid Value",
+            value: data.TotalPaidValue || 0,
+            icon: Wallet,
           },
         ]);
       } catch (err) {
@@ -63,7 +78,7 @@ export default function StatsGrid() {
         >
           <div className="flex items-center justify-between mb-3 text-text-muted">
             <p className="text-[14px] font-bold tracking-widest leading-none text-black">{stat.title}</p>
-            <stat.icon size={14} className="" />
+            <stat.icon size={18} className="" />
           </div>
           <div className="flex items-end justify-between">
             <h3 className="font-sans text-2xl font-bold tracking-tight text-black">{stat.value}</h3>

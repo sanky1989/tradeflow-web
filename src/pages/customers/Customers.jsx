@@ -236,8 +236,8 @@ export default function Customers() {
       {/* Page Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight text-text-main">Customers</h2>
-          <p className="text-sm font-medium text-text-muted mt-1">Manage and track your client details</p>
+          <h2 className="text-2xl font-bold tracking-tight text-black">Customers</h2>
+          <p className="text-sm font-medium text-gray-900 mt-1">Manage and track your client details</p>
         </div>
         <button 
           onClick={() => handleOpenForm()}
@@ -278,7 +278,7 @@ export default function Customers() {
             placeholder="Search customers..." 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full rounded-lg border border-border bg-sidebar/50 py-2 pl-10 pr-4 text-sm text-text-main placeholder:text-text-muted focus:border-accent/50 focus:outline-none focus:ring-1 focus:ring-accent/50 outline-none transition-all"
+            className="w-full rounded-lg border  borer-gray-300 bg-white py-2 pl-10 pr-4 text-sm text-text-main placeholder:text-text-muted focus:border-accent/50 focus:outline-none focus:ring-1 focus:ring-accent/50 outline-none transition-all"
           />
         </div>
         <div className="flex items-center gap-2">
@@ -299,70 +299,66 @@ export default function Customers() {
       </div>
 
       {/* Customer Table */}
-      <div className="rounded-xl border border-border bg-card overflow-hidden">
+      <div className="rounded-xl border border-gray-300 bg-white overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead>
-              <tr className="border-b border-border bg-sidebar/50">
-                <th className="px-8 py-4 text-[11px] font-bold uppercase tracking-widest text-text-muted">Client</th>
-                <th className="px-8 py-4 text-[11px] font-bold uppercase tracking-widest text-text-muted">Company & Location</th>
-                <th className="px-8 py-4 text-[11px] font-bold uppercase tracking-widest text-text-muted">Status</th>
-                <th className="px-8 py-4 text-[11px] font-bold uppercase tracking-widest text-text-muted">Total Spent</th>
-                <th className="px-8 py-4 text-[11px] font-bold uppercase tracking-widest text-text-muted"></th>
+              <tr className="border-b border-gray-300 bg-white">
+                <th className="px-8 py-4 text-[12px] uppercase tracking-widest font-semibold text-black">Client</th>
+                <th className="px-8 py-4 text-[12px] uppercase tracking-widest font-semibold text-black">Company & Location</th>
+                <th className="px-8 py-4 text-[12px] uppercase tracking-widest font-semibold text-black">Phone Number</th>
+                <th className="px-8 py-4 text-[12px] uppercase tracking-widest font-semibold text-black">Note</th>
+                <th className="px-8 py-4 text-[12px] uppercase tracking-widest font-semibold text-black">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-border/50">
+            <tbody className="divide-y divide-gray-300 border-b border-gray-300">
               {filteredCustomers.length > 0 ? (
                 filteredCustomers.map((customer) => (
                   <tr 
                     key={customer.Id} 
-                    className="group transition-colors hover:bg-bg/50 cursor-pointer"
+                    className="group transition-colors cursor-pointer"
                     onClick={() => handleOpenForm(customer)}
                   >
                     <td className="px-8 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-accent/10 text-accent">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full text-white bg-accent">
                           <User size={14} />
                         </div>
                         <div className="flex flex-col">
-                          <span className="text-[13px] font-bold text-text-main">{customer.FirstName} {customer.LastName}</span>
-                          <span className="text-[11px] text-text-muted">{customer.Email}</span>
+                          <span className="text-[13px] font-bold text-black">{customer.FirstName} {customer.LastName}</span>
+                          <span className="text-[11px] text-gray-900">{customer.Email}</span>
                         </div>
                       </div>
                     </td>
                     <td className="px-8 py-4">
                       <div className="flex flex-col">
-                        <span className="text-[13px] font-medium text-text-main">{customer.CompanyName}</span>
-                        <span className="text-[11px] text-text-muted">{customer.City}, {customer.State}</span>
+                        <span className="text-[13px] font-medium text-black">{customer.CompanyName}</span>
+                        <span className="text-[12px] text-gray-900">{customer?.City}, {customer?.State}, {customer?.Postcode}</span>
                       </div>
                     </td>
                     <td className="px-8 py-4">
-                      <span className={cn(
-                        "inline-flex items-center rounded px-2 py-1 text-[11px] font-bold ring-1 ring-inset",
-                        customer.Status === "Active" ? "bg-success/15 text-success ring-success/20" : 
-                        customer.Status === "Pending" ? "bg-warning/15 text-warning ring-warning/20" : "bg-rose-500/15 text-rose-500 ring-rose-500/20"
-                      )}>
-                        {customer.Status}
+                      <span className="text-[13px] text-gray-900">
+                        {customer.Phone}
                       </span>
                     </td>
-                    <td className="px-8 py-4 text-[13px] font-bold text-text-main">{customer.Spent}</td>
-                    <td className="px-8 py-4 text-right">
-                      <button 
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          // open actions menu
-                        }}
-                        className="text-text-muted hover:text-text-main transition-colors p-1"
-                      >
-                        <MoreHorizontal size={16} />
-                      </button>
+                    <td className="px-8 py-4 text-[13px]  text-gray-900">{customer?.Notes}</td>
+                    <td className="px-8 py-4 text-right gap-2 flex align-center">
+    <button
+      className="text-[11px] px-3 py-1 rounded border border-gray-300 hover:bg-accent hover:text-white">
+      Edit
+    </button>
+    <button
+      className="text-[11px] px-3 py-1 rounded border border-gray-300 hover:bg-accent hover:text-white">
+      View
+    </button>
+
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
                   <td colSpan={5} className="px-8 py-20 text-center">
-                    <div className="flex flex-col items-center gap-2 text-text-muted">
+                    <div className="flex flex-col items-center gap-2 text-black">
                       <Search size={40} className="mb-2 opacity-20" />
                       <p className="text-[15px] font-medium">No results found</p>
                       <p className="text-xs">Try adjusting your search or filters</p>
@@ -373,7 +369,7 @@ export default function Customers() {
             </tbody>
           </table>
         </div>
-        <div className="p-4 border-t border-border bg-sidebar/30 flex items-center justify-between text-[11px] text-text-muted">
+        <div className="p-4 border-b border-gray-300 bg-white flex items-center justify-between text-[11px] text-text-muted">
           <span>Showing {filteredCustomers.length} of {CUSTOMER_DATA.length} customers</span>
           <div className="flex items-center gap-2">
             <button className="px-3 py-1 rounded border border-border hover:bg-card disabled:opacity-50" disabled>Previous</button>

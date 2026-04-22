@@ -64,7 +64,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
                   className={cn(
                     "flex w-full items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium transition-all group cursor-pointer",
                     isActive
-                      ? "bg-card text-text-main"
+                      ? "bg-accent text-text-main"
                       : "text-black"
                   )}
                 >
