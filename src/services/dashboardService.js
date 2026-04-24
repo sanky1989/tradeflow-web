@@ -9,3 +9,8 @@ export const getRecentQuotes = async () => {
   const res = await api.get("/dashboard/recent-quotes");
   return res.data;
 };
+
+export const getPaymentSummary = async () => {
+  const res = await api.get("/dashboard/payment-summary");
+  return res.data;
+};
