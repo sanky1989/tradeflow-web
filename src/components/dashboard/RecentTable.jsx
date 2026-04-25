@@ -106,7 +106,7 @@ export default function RecentTable() {
 
                   {/* Amount */}
                   <td className="px-8 py-4 text-[13px] font-bold text-gray-900">
-                    {row.TotalAmount}
+                    ${Number(row.TotalAmount || 0).toLocaleString("en-US")}
                   </td>
 
                   {/* Date */}

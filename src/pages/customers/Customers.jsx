@@ -1,379 +1,243 @@
-import { Search, Plus, Filter, MoreHorizontal, User, X } from "lucide-react";
+import { Search, Filter, User } from "lucide-react";
 import { useState, useEffect } from "react";
-import { cn } from "../../lib/utils";
 import { customerService } from "../../services/customerService";
 import Loader from "../../components/common/Loader";
-
-const CUSTOMER_DATA = [];
+import { useNavigate } from "react-router-dom";
+import { Eye, Pencil, Plus  } from "lucide-react";
 
 export default function Customers() {
-  const [view, setView] = useState("list"); // "list" or "form"
-  const [editingCustomer, setEditingCustomer] = useState(null);
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
   const [CUSTOMER_DATA, setCUSTOMER_DATA] = useState([]);
-   const [loading, setLoading] = useState(true);
-  const [formData, setFormData] = useState({
-    FirstName: "",
-    LastName: "",
-    CompanyName: "",
-    Email: "",
-    Phone: "",
-    City: "",
-    State: "",
-    Notes: ""
-  });
+  const [loading, setLoading] = useState(true);
 
+  // ✅ Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
 
+  // 🔥 LOAD ALL CUSTOMERS (initial)
   useEffect(() => {
-    const loadStats = async () => {
+    const loadCustomers = async () => {
       try {
         setLoading(true);
-        const getCustomersData = await customerService();
-        console.log('customer data',getCustomersData);
-        setCUSTOMER_DATA(getCustomersData.Data);
+        const res = await customerService.getAll();
+        setCUSTOMER_DATA(res.Data);
       } catch (err) {
-        console.log("Stats error", err);
+        console.log("Load error", err);
       } finally {
         setLoading(false);
       }
     };
-    loadStats();
+    loadCustomers();
   }, []);
 
-  const handleOpenForm = (customer = null) => {
-    if (customer) {
-      setEditingCustomer(customer);
-      setFormData({
-        FirstName: customer.FirstName || "",
-        LastName: customer.LastName || "",
-        CompanyName: customer.CompanyName || "",
-        Email: customer.Email || "",
-        Phone: customer.Phone || "",
-        City: customer.City || "",
-        State: customer.State || "",
-        Notes: customer.Notes || ""
-      });
-    } else {
-      setEditingCustomer(null);
-      setFormData({
-        FirstName: "",
-        LastName: "",
-        CompanyName: "",
-        Email: "",
-        Phone: "",
-        City: "",
-        State: "",
-        Notes: ""
-      });
-    }
-    setView("form");
-  };
+  // 🔥 SEARCH API (Debounce)
+  useEffect(() => {
+    const delay = setTimeout(async () => {
+      try {
+        // ❗ empty search -> load all
+        if (!searchQuery.trim()) {
+          const res = await customerService.getAll();
+          setCUSTOMER_DATA(res.Data);
+          return;
+        }
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Submitting:", editingCustomer ? "Update" : "Create", formData);
-    setView("list");
-  };
+        const res = await customerService.search(searchQuery);
 
+        if (!res.Success) return;
+
+        setCUSTOMER_DATA(res.Data);
+      } catch (err) {
+        console.log("Search error", err);
+      }
+    }, 300);
+
+    return () => clearTimeout(delay);
+  }, [searchQuery]);
+
+  // ✅ Reset page on search/filter
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, statusFilter]);
+
+  // ✅ Filter (only status now, search API handle karega)
   const filteredCustomers = CUSTOMER_DATA.filter((customer) => {
-    const matchesSearch = 
-      `${customer.FirstName} ${customer.LastName}`.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      customer.CompanyName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      customer.Email.toLowerCase().includes(searchQuery.toLowerCase());
-    
-    const matchesStatus = statusFilter === "All" || customer.Status === statusFilter;
-    
-    return matchesSearch && matchesStatus;
+    const matchesStatus =
+      statusFilter === "All" || customer.Status === statusFilter;
+
+    return matchesStatus;
   });
 
-  if (view === "form") {
-    return (
-      <div className="space-y-6">
-        <div className="flex items-center justify-between border-b border-border pb-6">
-          <div>
-            <h2 className="text-2xl font-bold tracking-tight text-text-main">
-              {editingCustomer ? "Update Customer" : "Create New Customer"}
-            </h2>
-            <p className="text-sm font-medium text-text-muted mt-1">
-              Enter the details below to {editingCustomer ? "update" : "save"} the customer information.
-            </p>
-          </div>
-          <button 
-            onClick={() => setView("list")}
-            className="rounded-lg border border-border bg-card px-4 py-2 text-sm font-bold text-text-main hover:bg-sidebar/50 transition-all"
-          >
-            Back to List
-          </button>
-        </div>
+  // ✅ Pagination
+  const totalPages = Math.ceil(filteredCustomers.length / itemsPerPage);
 
-        <div className="rounded-2xl border border-border bg-card shadow-sm p-8 max-w-4xl mx-auto">
-          <form onSubmit={handleSubmit}>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {/* First Name */}
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-text-muted uppercase tracking-wider">First Name</label>
-                <input 
-                  required
-                  type="text" 
-                  value={formData.FirstName}
-                  onChange={(e) => setFormData({...formData, FirstName: e.target.value})}
-                  className="w-full rounded-lg border border-border bg-bg px-4 py-3 text-sm text-text-main outline-none focus:border-accent/50 transition-all font-medium"
-                  placeholder="John"
-                />
-              </div>
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
-              {/* Last Name */}
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-text-muted uppercase tracking-wider">Last Name</label>
-                <input 
-                  required
-                  type="text" 
-                  value={formData.LastName}
-                  onChange={(e) => setFormData({...formData, LastName: e.target.value})}
-                  className="w-full rounded-lg border border-border bg-bg px-4 py-3 text-sm text-text-main outline-none focus:border-accent/50 transition-all font-medium"
-                  placeholder="Doe"
-                />
-              </div>
+  const paginatedCustomers = filteredCustomers.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
 
-              {/* Company Name */}
-              <div className="space-y-2 md:col-span-2">
-                <label className="text-xs font-bold text-text-muted uppercase tracking-wider">Company Name</label>
-                <input 
-                  type="text" 
-                  value={formData.CompanyName}
-                  onChange={(e) => setFormData({...formData, CompanyName: e.target.value})}
-                  className="w-full rounded-lg border border-border bg-bg px-4 py-3 text-sm text-text-main outline-none focus:border-accent/50 transition-all font-medium"
-                  placeholder="Acme Corp"
-                />
-              </div>
-
-              {/* Email */}
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-text-muted uppercase tracking-wider">Email Address</label>
-                <input 
-                  required
-                  type="email" 
-                  value={formData.Email}
-                  onChange={(e) => setFormData({...formData, Email: e.target.value})}
-                  className="w-full rounded-lg border border-border bg-bg px-4 py-3 text-sm text-text-main outline-none focus:border-accent/50 transition-all font-medium"
-                  placeholder="john@example.com"
-                />
-              </div>
-
-              {/* Phone */}
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-text-muted uppercase tracking-wider">Phone Number</label>
-                <input 
-                  type="tel" 
-                  value={formData.Phone}
-                  onChange={(e) => setFormData({...formData, Phone: e.target.value})}
-                  className="w-full rounded-lg border border-border bg-bg px-4 py-3 text-sm text-text-main outline-none focus:border-accent/50 transition-all font-medium"
-                  placeholder="+91 00000 00000"
-                />
-              </div>
-
-              {/* City */}
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-text-muted uppercase tracking-wider">City</label>
-                <input 
-                  type="text" 
-                  value={formData.City}
-                  onChange={(e) => setFormData({...formData, City: e.target.value})}
-                  className="w-full rounded-lg border border-border bg-bg px-4 py-3 text-sm text-text-main outline-none focus:border-accent/50 transition-all font-medium"
-                  placeholder="Mumbai"
-                />
-              </div>
-
-              {/* State */}
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-text-muted uppercase tracking-wider">State</label>
-                <input 
-                  type="text" 
-                  value={formData.State}
-                  onChange={(e) => setFormData({...formData, State: e.target.value})}
-                  className="w-full rounded-lg border border-border bg-bg px-4 py-3 text-sm text-text-main outline-none focus:border-accent/50 transition-all font-medium"
-                  placeholder="Maharashtra"
-                />
-              </div>
-
-              {/* Notes */}
-              <div className="space-y-2 md:col-span-2">
-                <label className="text-xs font-bold text-text-muted uppercase tracking-wider">Internal Notes</label>
-                <textarea 
-                  rows={4}
-                  value={formData.Notes}
-                  onChange={(e) => setFormData({...formData, Notes: e.target.value})}
-                  className="w-full rounded-lg border border-border bg-bg px-4 py-3 text-sm text-text-main outline-none focus:border-accent/50 transition-all font-medium resize-none"
-                  placeholder="Add any specific details about this client..."
-                />
-              </div>
-            </div>
-
-            <div className="mt-10 flex items-center justify-end gap-4 border-t border-border pt-8">
-              <button 
-                type="button"
-                onClick={() => setView("list")}
-                className="rounded-lg px-6 py-2.5 text-sm font-bold text-text-muted hover:text-text-main transition-all"
-              >
-                Discard Changes
-              </button>
-              <button 
-                type="submit"
-                className="rounded-lg bg-accent px-10 py-2.5 text-sm font-bold text-white shadow-lg shadow-accent/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
-              >
-                {editingCustomer ? "Update Customer" : "Create Customer"}
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    );
-  }
+  if (loading) return <Loader />;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y78">
       {/* Page Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="text-2xl font-bold tracking-tight text-black">Customers</h2>
-          <p className="text-sm font-medium text-gray-900 mt-1">Manage and track your client details</p>
+          <p className="text-sm font-medium text-gray-900 mt-1">
+            Manage and track your client details
+          </p>
         </div>
-        <button 
-          onClick={() => handleOpenForm()}
-          className="inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2 text-sm font-bold text-white transition-opacity hover:opacity-90 cursor-pointer"
+        <button
+          onClick={() => navigate("/customers/new")}
+          className="justify-center inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2 text-sm font-bold text-white transition-opacity hover:opacity-90 cursor-pointer"
         >
-          <Plus size={16} />
           New Customer
         </button>
       </div>
 
-      {/* Customer Specific Stats */}
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
-        {[
-          { label: "Total Customers", value: "1,280", trend: "+12%" },
-          { label: "Active Now", value: "412", trend: "-2%" },
-          { label: "Lifetime Spent", value: "$142.5k", trend: "+18%" },
-        ].map((stat) => (
-          <div key={stat.label} className="rounded-xl border border-border border-gray-300 bg-white p-6">
-            <p className="text-[14px] font-bold text-black tracking-widest leading-none mb-3">{stat.label}</p>
-            <div className="flex items-end justify-between">
-              <h3 className="font-sans text-2xl font-bold tracking-tight text-black">{stat.value}</h3>
-              <span className={cn(
-                "text-[11px] font-bold px-1.5 py-0.5 rounded",
-                stat.trend.startsWith('+') ? "bg-success/15 text-success" : "bg-rose-500/15 text-rose-500"
-              )}>
-              </span>
-            </div>
-          </div>
-        ))}
-      </div>
-
       {/* Toolbar */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="relative flex-1 max-md:max-w-none max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" size={16} />
-          <input 
-            type="text" 
-            placeholder="Search customers..." 
+        <div className="relative flex-1 max-md:max-w-none w-full">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-black" size={16} />
+          <input
+            type="text"
+            placeholder="Search customers..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full rounded-lg border  borer-gray-300 bg-white py-2 pl-10 pr-4 text-sm text-text-main placeholder:text-text-muted focus:border-accent/50 focus:outline-none focus:ring-1 focus:ring-accent/50 outline-none transition-all"
+            className="w-full rounded-lg border border-gray-300 bg-white py-2 pl-10 pr-4 text-sm text-black placeholder:text-black  transition-all"
           />
         </div>
-        <div className="flex items-center gap-2">
-          <div className="flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-1.5">
-            <Filter size={14} className="text-text-muted" />
-            <select 
+
+        {/* <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-1.5">
+            <Filter size={14} className="text-black" />
+            <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="bg-transparent text-sm font-medium text-text-main outline-none cursor-pointer"
+              className="bg-transparent text-sm font-medium text-black outline-none cursor-pointer"
             >
-              <option value="All" className="bg-card text-text-main">All Status</option>
-              <option value="Active" className="bg-card text-text-main">Active</option>
-              <option value="Pending" className="bg-card text-text-main">Pending</option>
-              <option value="Inactive" className="bg-card text-text-main">Inactive</option>
+              <option value="All">All Status</option>
+              <option value="Active">Active</option>
+              <option value="Pending">Pending</option>
+              <option value="Inactive">Inactive</option>
             </select>
           </div>
-        </div>
+        </div> */}
       </div>
 
-      {/* Customer Table */}
+      {/* Table */}
       <div className="rounded-xl border border-gray-300 bg-white overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead>
               <tr className="border-b border-gray-300 bg-white">
-                <th className="px-8 py-4 text-[12px] uppercase tracking-widest font-semibold text-black">Client</th>
-                <th className="px-8 py-4 text-[12px] uppercase tracking-widest font-semibold text-black">Company & Location</th>
-                <th className="px-8 py-4 text-[12px] uppercase tracking-widest font-semibold text-black">Phone Number</th>
-                <th className="px-8 py-4 text-[12px] uppercase tracking-widest font-semibold text-black">Note</th>
-                <th className="px-8 py-4 text-[12px] uppercase tracking-widest font-semibold text-black">Action</th>
+                <th className="px-8 py-4 text-[12px] uppercase font-semibold text-black">Client</th>
+                <th className="px-8 py-4 text-[12px] uppercase font-semibold text-black">Company & Location</th>
+                <th className="px-8 py-4 text-[12px] uppercase font-semibold text-black">Phone</th>
+                <th className="px-8 py-4 text-[12px] uppercase font-semibold text-black">Note</th>
+                <th className="px-8 py-4 text-[12px] uppercase font-semibold text-black">Action</th>
               </tr>
             </thead>
+
             <tbody className="divide-y divide-gray-300 border-b border-gray-300">
-              {filteredCustomers.length > 0 ? (
-                filteredCustomers.map((customer) => (
-                  <tr 
-                    key={customer.Id} 
-                    className="group transition-colors cursor-pointer"
-                    onClick={() => handleOpenForm(customer)}
-                  >
+              {paginatedCustomers.length > 0 ? (
+                paginatedCustomers.map((customer) => (
+                  <tr key={customer.Id} className="group transition-colors cursor-pointer">
                     <td className="px-8 py-4">
                       <div className="flex items-center gap-3">
                         <div className="flex h-8 w-8 items-center justify-center rounded-full text-white bg-accent">
                           <User size={14} />
                         </div>
-                        <div className="flex flex-col">
-                          <span className="text-[13px] font-bold text-black">{customer.FirstName} {customer.LastName}</span>
-                          <span className="text-[11px] text-gray-900">{customer.Email}</span>
+                        <div>
+                          <span className="text-[13px] font-bold text-black">
+                            {customer.FirstName} {customer.LastName}
+                          </span>
+                          <span className="text-[11px] text-gray-900 block">
+                            {customer.Email}
+                          </span>
                         </div>
                       </div>
                     </td>
+
                     <td className="px-8 py-4">
-                      <div className="flex flex-col">
-                        <span className="text-[13px] font-medium text-black">{customer.CompanyName}</span>
-                        <span className="text-[12px] text-gray-900">{customer?.City}, {customer?.State}, {customer?.Postcode}</span>
+                      <div>
+                        <span className="text-[13px] font-medium text-black">
+                          {customer.CompanyName}
+                        </span>
+                        <span className="text-[12px] text-gray-900 block">
+                          {customer?.City}, {customer?.State}, {customer?.Postcode}
+                        </span>
                       </div>
                     </td>
-                    <td className="px-8 py-4">
-                      <span className="text-[13px] text-gray-900">
-                        {customer.Phone}
-                      </span>
-                    </td>
-                    <td className="px-8 py-4 text-[13px]  text-gray-900">{customer?.Notes}</td>
-                    <td className="px-8 py-4 text-right gap-2 flex align-center">
-    <button
-      className="text-[11px] px-3 py-1 rounded border border-gray-300 hover:bg-accent hover:text-white">
-      Edit
-    </button>
-    <button
-      className="text-[11px] px-3 py-1 rounded border border-gray-300 hover:bg-accent hover:text-white">
-      View
-    </button>
 
+                    <td className="px-8 py-4 text-[13px] text-gray-900">
+                      {customer.Phone}
+                    </td>
+
+                    <td className="px-8 py-4 text-[13px] text-gray-900">
+                      {customer?.Notes}
+                    </td>
+
+                    <td className="px-8 py-4 flex gap-0">
+                      <button
+                        onClick={() => navigate(`/customers/${customer.Id}/edit`)}
+                        className="text-[8px] px-3 py-1 rounded"
+                      >
+                        <Pencil size={16} className="text-gray-900" />
+                      </button>
+                      <button
+                        onClick={() => navigate(`/customers/${customer.Id}`)}
+                        className="text-[11px] px-3 py-1 rounded "
+                      >
+                        <Eye size={16} className="text-gray-900" />
+                      </button>
+                      <button
+                        onClick={() => navigate(`/customers/${customer.Id}/add-site`)}
+                        className="text-[11px] px-3 py-1 rounded "
+                      >
+                        <Plus size={16} className="text-gray-900" />
+                      </button>
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={5} className="px-8 py-20 text-center">
-                    <div className="flex flex-col items-center gap-2 text-black">
-                      <Search size={40} className="mb-2 opacity-20" />
-                      <p className="text-[15px] font-medium">No results found</p>
-                      <p className="text-xs">Try adjusting your search or filters</p>
-                    </div>
+                  <td colSpan={5} className="px-8 py-20 text-center text-gray-900 text-[14px]">
+                    No results found
                   </td>
                 </tr>
               )}
             </tbody>
           </table>
         </div>
-        <div className="p-4 border-b border-gray-300 bg-white flex items-center justify-between text-[11px] text-text-muted">
-          <span>Showing {filteredCustomers.length} of {CUSTOMER_DATA.length} customers</span>
+
+        {/* Pagination */}
+        <div className="p-4 border-b border-gray-300 bg-white flex items-center justify-between text-[11px] text-black">
+          <span>
+            Showing {paginatedCustomers.length} of {filteredCustomers.length} customers
+          </span>
+
           <div className="flex items-center gap-2">
-            <button className="px-3 py-1 rounded border border-border hover:bg-card disabled:opacity-50" disabled>Previous</button>
-            <button className="px-3 py-1 rounded border border-border hover:bg-card">Next</button>
+            <button
+              onClick={() => setCurrentPage((prev) => prev - 1)}
+              disabled={currentPage === 1}
+              className="px-3 py-1 rounded border border-gray-300 hover:bg-accent hover:text-white disabled:opacity-50"
+            >
+              Previous
+            </button>
+
+            <button
+              onClick={() => setCurrentPage((prev) => prev + 1)}
+              disabled={currentPage === totalPages || totalPages === 0}
+              className="px-3 py-1 rounded border border-gray-300 hover:bg-accent hover:text-white disabled:opacity-50"
+            >
+              Next
+            </button>
           </div>
         </div>
       </div>

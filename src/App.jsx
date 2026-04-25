@@ -2,10 +2,16 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/auth/Login";
 import Dashboard from "./pages/dashboard/Dashboard";
 import Customers from "./pages/customers/Customers";
+import CustomerDetails from "./pages/customers/CustomerDetails";
+import CustomerEdit from "./pages/customers/CustomeUpdates";
+import CustomerAddSite from "./pages/customers/CustomerAddSite";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import DashboardLayout from "./layouts/DashboardLayout";
 import { useAuth } from "./context/AuthContext";
 import Loader from "./components/common/Loader";
+import { Toaster } from "react-hot-toast";
+import CustomerCreate from "./pages/customers/CustomerCreate";
+
 
 //NEW: PublicRoute
 const PublicRoute = ({ children }) => {
@@ -19,28 +25,34 @@ const PublicRoute = ({ children }) => {
 
 function App() {
   return (
+    <>
+    <Toaster 
+    position="bottom-right"
+    toastOptions={{
+    duration: 3000,
+  }}
+     />
     <BrowserRouter>
       <Routes>
         <Route
           path="/"
-          element={
-            <PublicRoute>
-              <Login />
-            </PublicRoute>
-          }
-        />
+          element={<PublicRoute>
+            <Login />
+          </PublicRoute>} />
         <Route
-          element={
-            <ProtectedRoute>
-              <DashboardLayout />
-            </ProtectedRoute>
-          }
+          element={<ProtectedRoute>
+            <DashboardLayout />
+          </ProtectedRoute>}
         >
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/customers" element={<Customers />} />
+          <Route path="/customers/:id" element={<CustomerDetails />} />
+          <Route path="/customers/:id/edit" element={<CustomerEdit />} />
+          <Route path="/customers/new" element={<CustomerCreate />} />
+          <Route path="/customers/:id/add-site" element={<CustomerAddSite />} />
         </Route>
       </Routes>
-    </BrowserRouter>
+    </BrowserRouter></>
   );
 }
 

@@ -49,12 +49,12 @@ export default function StatsGrid() {
           },
           {
             title: "Total Quoted Value",
-            value: data.TotalQuotedValue || 0,
+            value: `$${Number(data.TotalQuotedValue || 0).toLocaleString("en-US")}`,
             icon: DollarSign,
           },
           {
             title: "Total Paid Value",
-            value: data.TotalPaidValue || 0,
+            value: `$${Number(data.TotalPaidValue || 0).toLocaleString("en-US")}`,
             icon: Wallet,
           },
         ]);
@@ -81,7 +81,7 @@ export default function StatsGrid() {
             <stat.icon size={18} className="" />
           </div>
           <div className="flex items-end justify-between">
-            <h3 className="font-sans text-2xl font-bold tracking-tight text-black">{stat.value}</h3>
+            <h3 className="font-sans text-[18px] font-bold tracking-tight text-black">{stat.value}</h3>
           </div>
         </div>
       ))}
