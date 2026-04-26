@@ -1,21 +1,11 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { customerService } from "../../services/customerService";
+import GoogleAddressAutocomplete from "../../components/customers/GoogleAddressAutocomplete";
 import Loader from "../../components/common/Loader";
 import toast from "react-hot-toast";
 
-const STATES = [
-  "Alabama","Alaska","Arizona","Arkansas","California","Colorado",
-  "Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho",
-  "Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana",
-  "Maine","Maryland","Massachusetts","Michigan","Minnesota",
-  "Mississippi","Missouri","Montana","Nebraska","Nevada",
-  "New Hampshire","New Jersey","New Mexico","New York",
-  "North Carolina","North Dakota","Ohio","Oklahoma","Oregon",
-  "Pennsylvania","Rhode Island","South Carolina","South Dakota",
-  "Tennessee","Texas","Utah","Vermont","Virginia","Washington",
-  "West Virginia","Wisconsin","Wyoming"
-];
+const AU_STATES = ["ACT", "NSW", "NT", "QLD", "SA", "TAS", "VIC", "WA"];
 
 function CustomerEdit() {
   const { id } = useParams();
@@ -26,66 +16,64 @@ function CustomerEdit() {
   const [saving, setSaving] = useState(false);
   const [errors, setErrors] = useState({});
 
-  // FETCH CUSTOMER
   useEffect(() => {
     const fetchCustomer = async () => {
       try {
         const res = await customerService.getById(id);
-        if (!res.Success) throw new Error(res.Message);
-        setForm(res.Data);
+        setForm(res.Data || {});
       } catch (err) {
         console.error(err);
-        alert("Failed to load customer");
+        toast.error("Failed to load customer");
       } finally {
         setLoading(false);
       }
     };
+
     fetchCustomer();
   }, [id]);
 
-  if (loading) return <Loader />;
-
-  // HANDLE CHANGE
   const handleChange = (e) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value,
-    });
-
-    setErrors({
-      ...errors,
-      [e.target.name]: "",
-    });
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
-  // VALIDATION (ALL REQUIRED)
+  const handleAddressSelected = useCallback((address) => {
+    setForm((prev) => ({
+      ...prev,
+      AddressLine1: address.AddressLine1 || prev.AddressLine1,
+      City: address.City || prev.City,
+      State: address.State || prev.State,
+      Postcode: address.Postcode || prev.Postcode,
+    }));
+
+    setErrors((prev) => ({
+      ...prev,
+      AddressLine1: "",
+      City: "",
+      State: "",
+      Postcode: "",
+    }));
+  }, []);
+
   const validate = () => {
     const e = {};
 
-    if (!form.FirstName?.trim()) e.FirstName = "First Name Required";
-    if (!form.LastName?.trim()) e.LastName = "Last Name Required";
-
-    if (!form.Email?.trim()) e.Email = "Email Required";
-    else if (!/\S+@\S+\.\S+/.test(form.Email))
-      e.Email = "Invalid Email";
-
-    if (!form.Phone?.trim()) e.Phone = "Phone Required";
-    if (!form.CompanyName?.trim()) e.CompanyName = "Company Required";
-
-    if (!form.AddressLine1?.trim()) e.AddressLine1 = "Address Line 1 Required";
-    if (!form.AddressLine2?.trim()) e.AddressLine2 = "Address Line 2 Required";
-
-    if (!form.City?.trim()) e.City = "City Required";
-    if (!form.State?.trim()) e.State = "State Required";
-    if (!form.Postcode?.trim()) e.Postcode = "Postcode Required";
-
-    if (!form.Notes?.trim()) e.Notes = "Notes Required";
+    if (!form.FirstName?.trim()) e.FirstName = "First name is required";
+    if (!form.LastName?.trim()) e.LastName = "Last name is required";
+    if (!form.Email?.trim()) e.Email = "Email is required";
+    else if (!/\S+@\S+\.\S+/.test(form.Email)) e.Email = "Enter a valid email";
+    if (!form.Phone?.trim()) e.Phone = "Phone is required";
+    if (!form.CompanyName?.trim()) e.CompanyName = "Company is required";
+    if (!form.AddressLine1?.trim()) e.AddressLine1 = "Address line 1 is required";
+    if (!form.City?.trim()) e.City = "City/Suburb is required";
+    if (!form.State?.trim()) e.State = "State is required";
+    if (!form.Postcode?.trim()) e.Postcode = "Postcode is required";
 
     setErrors(e);
     return Object.keys(e).length === 0;
   };
 
-  // UPDATE CUSTOMER
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
@@ -107,101 +95,77 @@ function CustomerEdit() {
         Notes: form.Notes || "",
       };
 
-      const res = await customerService.update(id, payload);
-
-      if (!res.Success) {
-        alert(res.Message || "Update failed");
-        return;
-      }
-
+      await customerService.update(id, payload);
       toast.success("Customer updated successfully");
-      // navigate("/customers");
+      navigate(`/customers/${id}`);
     } catch (err) {
-      toast.error("Update failed");
+      console.error(err);
+      toast.error(err.message || "Update failed");
     } finally {
       setSaving(false);
     }
   };
 
+  if (loading) return <Loader />;
+
   return (
     <div className="space-y-6">
-
-      {/* HEADER */}
-      <div className="flex justify-between items-center">
-        <h2 className="text-xl font-semibold">Edit Customer</h2>
-
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight text-black">Edit Customer</h2>
+          <p className="mt-1 text-sm text-gray-700">Update customer details and refresh the address using Google Places if required.</p>
+        </div>
         <button
-          onClick={() => navigate(`/customers`)}
-          className="inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2 text-sm  text-white hover:opacity-90"
+          type="button"
+          onClick={() => navigate(`/customers/${id}`)}
+          className="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-bold text-black hover:bg-gray-50"
         >
           Cancel
         </button>
       </div>
 
-      {/* FORM */}
-      <form
-        onSubmit={handleSubmit}
-        className="grid grid-cols-1 md:grid-cols-2 gap-3 bg-white p-6 rounded-xl border border-gray-300"
-      >
-        <Input label="First Name" name="FirstName" value={form.FirstName} onChange={handleChange} error={errors.FirstName} />
-        <Input label="Last Name" name="LastName" value={form.LastName} onChange={handleChange} error={errors.LastName} />
-        <Input label="Email" name="Email" value={form.Email} onChange={handleChange} error={errors.Email} />
-        <Input label="Phone" name="Phone" value={form.Phone} onChange={handleChange} error={errors.Phone} />
-        <Input label="Company" name="CompanyName" value={form.CompanyName} onChange={handleChange} error={errors.CompanyName} />
-        <Input label="Address Line 1" name="AddressLine1" value={form.AddressLine1} onChange={handleChange} error={errors.AddressLine1} />
+      <form onSubmit={handleSubmit} className="rounded-xl border border-gray-300 bg-white p-6">
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+          <Input label="First Name" name="FirstName" value={form.FirstName} onChange={handleChange} error={errors.FirstName} />
+          <Input label="Last Name" name="LastName" value={form.LastName} onChange={handleChange} error={errors.LastName} />
+          <Input label="Email" name="Email" value={form.Email} onChange={handleChange} error={errors.Email} />
+          <Input label="Phone" name="Phone" value={form.Phone} onChange={handleChange} error={errors.Phone} />
+          <Input label="Company" name="CompanyName" value={form.CompanyName} onChange={handleChange} error={errors.CompanyName} />
 
-        {/* ✅ FIXED */}
-        <Input label="Address Line 2" name="AddressLine2" value={form.AddressLine2} onChange={handleChange} error={errors.AddressLine2} />
+          <GoogleAddressAutocomplete label="Search New Address" onAddressSelected={handleAddressSelected} />
 
-        <Input label="City" name="City" value={form.City} onChange={handleChange} error={errors.City} />
+          <Input label="Address Line 1" name="AddressLine1" value={form.AddressLine1} onChange={handleChange} error={errors.AddressLine1} />
+          <Input label="Address Line 2 / Unit / Shop" name="AddressLine2" value={form.AddressLine2} onChange={handleChange} error={errors.AddressLine2} />
+          <Input label="City / Suburb" name="City" value={form.City} onChange={handleChange} error={errors.City} />
+          <Select label="State" name="State" value={form.State} onChange={handleChange} error={errors.State} options={AU_STATES} />
+          <Input label="Postcode" name="Postcode" value={form.Postcode} onChange={handleChange} error={errors.Postcode} />
 
-        {/* STATE */}
-        <div className="space-y-1">
-          <label className="text-black text-[14px]">State</label>
-          <select
-            name="State"
-            value={form.State}
-            onChange={handleChange}
-            className={`w-full rounded-lg border px-4 py-3 text-sm ${
-              errors.State ? "border-red-500" : "border-gray-300"
-            }`}
+          <div className="space-y-1 md:col-span-2">
+            <label className="text-black text-[14px]">Notes</label>
+            <textarea
+              name="Notes"
+              value={form.Notes || ""}
+              onChange={handleChange}
+              rows={4}
+              className="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm text-black focus:border-gray-400 focus:outline-none focus:ring-0"
+            />
+          </div>
+        </div>
+
+        <div className="mt-6 flex justify-end gap-3">
+          <button
+            type="button"
+            onClick={() => navigate(`/customers/${id}`)}
+            className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-bold text-black hover:bg-gray-50"
           >
-            <option value="">Select State</option>
-            {STATES.map((state) => (
-              <option key={state} value={state}>{state}</option>
-            ))}
-          </select>
-          {errors.State && <p className="text-xs text-red-500">{errors.State}</p>}
-        </div>
-
-        <Input label="Postcode" name="Postcode" value={form.Postcode} onChange={handleChange} error={errors.Postcode} />
-
-        {/* NOTES FIXED */}
-        <div className="md:col-span-2">
-          <label className="text-xs text-black">Notes</label>
-          <textarea
-            name="Notes"
-            value={form.Notes || ""}
-            onChange={handleChange}
-            className={`w-full rounded-lg border px-4 py-3 text-sm ${
-              errors.Notes ? "border-red-500" : "border-gray-300"
-            }`}
-          />
-          {errors.Notes && <p className="text-xs text-red-500">{errors.Notes}</p>}
-        </div>
-
-        {/* SUBMIT */}
-        <div className="md:col-span-2 flex justify-start">
+            Back
+          </button>
           <button
             type="submit"
             disabled={saving}
-            className="inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2 text-sm font-bold text-white hover:opacity-90"
+            className="inline-flex items-center rounded-lg bg-accent px-4 py-2 text-sm font-bold text-white transition-opacity hover:opacity-90 disabled:opacity-60"
           >
-            {saving ? (
-              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-            ) : (
-              "Update"
-            )}
+            {saving ? "Saving..." : "Save Changes"}
           </button>
         </div>
       </form>
@@ -209,7 +173,6 @@ function CustomerEdit() {
   );
 }
 
-// INPUT COMPONENT
 const Input = ({ label, name, value, onChange, error }) => (
   <div className="space-y-1">
     <label className="text-black text-[14px]">{label}</label>
@@ -217,10 +180,30 @@ const Input = ({ label, name, value, onChange, error }) => (
       name={name}
       value={value || ""}
       onChange={onChange}
-      className={`w-full rounded-lg border px-4 py-3 text-sm text-black ${
+      className={`w-full rounded-lg border px-4 py-3 text-sm text-black focus:border-gray-400 focus:outline-none focus:ring-0 ${
         error ? "border-red-500" : "border-gray-300"
       }`}
     />
+    {error && <p className="text-xs text-red-500">{error}</p>}
+  </div>
+);
+
+const Select = ({ label, name, value, onChange, error, options }) => (
+  <div className="space-y-1">
+    <label className="text-black text-[14px]">{label}</label>
+    <select
+      name={name}
+      value={value || ""}
+      onChange={onChange}
+      className={`w-full rounded-lg border bg-white px-4 py-3 text-sm text-black focus:border-gray-400 focus:outline-none focus:ring-0 ${
+        error ? "border-red-500" : "border-gray-300"
+      }`}
+    >
+      <option value="">Select State</option>
+      {options.map((option) => (
+        <option key={option} value={option}>{option}</option>
+      ))}
+    </select>
     {error && <p className="text-xs text-red-500">{error}</p>}
   </div>
 );
