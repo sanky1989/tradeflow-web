@@ -1,123 +1,171 @@
 import React, { useEffect, useState } from "react";
+import { AlertCircle, RefreshCw } from "lucide-react";
 import { cn } from "../../lib/utils";
-import { getRecentQuotes } from "../../services/dashboardService"; // <-- apna path check kar
+import { getRecentQuotes } from "../../services/dashboardService";
 import Loader from "../common/Loader";
-
+ 
+const formatCurrency = (value) =>
+  new Intl.NumberFormat("en-AU", {
+    style: "currency",
+    currency: "AUD",
+    maximumFractionDigits: 0,
+  }).format(Number(value || 0));
+ 
+const formatDate = (value) => {
+  if (!value) return "-";
+ 
+  return new Date(value).toLocaleDateString("en-AU", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+};
+ 
+const getStatusClass = (status) => {
+  const normalisedStatus = (status || "").toLowerCase();
+ 
+  if (
+    normalisedStatus.includes("complete") ||
+    normalisedStatus.includes("accepted") ||
+    normalisedStatus.includes("paid")
+  ) {
+    return "bg-green-100 text-green-700 ring-green-200";
+  }
+ 
+  if (
+    normalisedStatus.includes("sent") ||
+    normalisedStatus.includes("pending") ||
+    normalisedStatus.includes("draft")
+  ) {
+    return "bg-amber-100 text-amber-700 ring-amber-200";
+  }
+ 
+  return "bg-gray-100 text-gray-700 ring-gray-200";
+};
+ 
 export default function RecentTable() {
   const [quotes, setQuotes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
+ 
+  const loadQuotes = async () => {
+    setLoading(true);
+    setError("");
+ 
+    try {
+      const res = await getRecentQuotes();
+      setQuotes(res.Data || []);
+    } catch (err) {
+      console.error("Recent quotes error:", err);
+      setError(err?.message || "Failed to load recent quotes.");
+    } finally {
+      setLoading(false);
+    }
+  };
+ 
   useEffect(() => {
-    const loadQuotes = async () => {
-      try {
-        const res = await getRecentQuotes();
-        console.log("quotes", res);
-
-        setQuotes(res?.Data || []);
-      } catch (err) {
-        console.log("error", err);
-        setError("Failed to load quotes");
-      } finally {
-        setLoading(false);
-      }
-    };
-
     loadQuotes();
   }, []);
-
+ 
   return (
-    <div className="rounded-xl border border-gray-300 bg-white overflow-hidden">
-      
-      {/* Header */}
-      <div className="p-6 border-b border-gray-300">
-        <h3 className="text-[16px] font-semibold text-black">
-          Recent Quotes
-        </h3>
+    <div className="overflow-hidden rounded-xl border border-gray-300 bg-white">
+      <div className="flex flex-col justify-between gap-3 border-b border-gray-300 p-6 sm:flex-row sm:items-center">
+        <div>
+          <h3 className="text-[16px] font-semibold text-black">Recent Quotes</h3>
+          <p className="mt-1 text-xs font-medium text-gray-500">
+            Latest quotes created for this tenant
+          </p>
+        </div>
+ 
+        <button
+          type="button"
+          onClick={loadQuotes}
+          className="inline-flex w-fit items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-bold text-black"
+        >
+          <RefreshCw size={14} />
+          Refresh
+        </button>
       </div>
-
-      {/* Loading */}
+ 
       {loading && (
-       <Loader/>
-      )}
-
-      {/* Error */}
-      {error && (
-        <div className="p-6 text-sm text-red-500">{error}</div>
-      )}
-
-      {/* Empty State */}
-      {!loading && quotes.length === 0 && (
-        <div className="p-6 text-sm text-gray-500">
-          No quotes found
+        <div className="p-6">
+          <Loader />
         </div>
       )}
-
-      {/* Table */}
-      {!loading && quotes.length > 0 && (
+ 
+      {!loading && error && (
+        <div className="m-6 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+          <div className="flex gap-2">
+            <AlertCircle size={18} />
+            <span>{error}</span>
+          </div>
+        </div>
+      )}
+ 
+      {!loading && !error && quotes.length === 0 && (
+        <div className="p-8 text-center">
+          <p className="text-sm font-semibold text-gray-700">No recent quotes found.</p>
+          <p className="mt-1 text-xs text-gray-500">
+            New quotes will appear here after they are created.
+          </p>
+        </div>
+      )}
+ 
+      {!loading && !error && quotes.length > 0 && (
         <div className="overflow-x-auto">
           <table className="w-full text-left">
-            
             <thead>
-              <tr className="border-b border-gray-300 bg-white">
-                <th className="px-8 py-4 text-[12px] uppercase tracking-widest font-semibold text-black">
-                  Quote Number
+              <tr className="border-b border-gray-300 bg-gray-50">
+                <th className="px-6 py-4 text-[11px] font-bold uppercase tracking-widest text-gray-600">
+                  Quote
                 </th>
-                <th className="px-8 py-4 text-[12px] uppercase tracking-widest font-semibold text-black">
-                  Customer Name
+                <th className="px-6 py-4 text-[11px] font-bold uppercase tracking-widest text-gray-600">
+                  Customer
                 </th>
-                <th className="px-8 py-4 text-[12px] uppercase tracking-widest font-semibold text-black">
+                <th className="px-6 py-4 text-[11px] font-bold uppercase tracking-widest text-gray-600">
                   Status
                 </th>
-                <th className="px-8 py-4 text-[12px] uppercase tracking-widest font-semibold text-black">
-                  Total Amount
+                <th className="px-6 py-4 text-[11px] font-bold uppercase tracking-widest text-gray-600">
+                  Amount
                 </th>
-                <th className="px-8 py-4 text-[12px] uppercase tracking-widest font-semibold text-black">
-                  Created Utc
+                <th className="px-6 py-4 text-[11px] font-bold uppercase tracking-widest text-gray-600">
+                  Created
                 </th>
               </tr>
             </thead>
-
-            <tbody className="divide-y border-gray-300">
-              {quotes.slice(0, 5).map((row) => (
-                <tr key={row.Id} className="group transition-colors hover:bg-gray-50">
-                  
-                  {/* Quote Number */}
-                  <td className="px-8 py-4 text-[13px] font-medium text-gray-900 ">
-                    {row.QuoteNumber}
+ 
+            <tbody className="divide-y divide-gray-200">
+              {quotes.slice(0, 8).map((row) => (
+                <tr key={row.Id} className="transition-colors hover:bg-gray-50">
+                  <td className="whitespace-nowrap px-6 py-4 text-[13px] font-bold text-gray-900">
+                    {row.QuoteNumber || "-"}
                   </td>
-
-                  {/* Customer Name */}
-                  <td className="px-8 py-4 text-[13px] font-medium text-gray-900">
-                    {row.CustomerName}
+ 
+                  <td className="px-6 py-4 text-[13px] font-medium text-gray-900">
+                    {row.CustomerName || "-"}
                   </td>
-
-                  {/* Status */}
-                  <td className="px-8 py-4">
+ 
+                  <td className="px-6 py-4">
                     <span
                       className={cn(
-                        "inline-flex items-center rounded px-2 py-1 text-[11px] font-bold ring-1 ring-inset bg-green-100 bg-red-100 text-red-600 ring-red-200",
-                       
+                        "inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-bold ring-1 ring-inset",
+                        getStatusClass(row.Status)
                       )}
                     >
-                      {row.Status}
+                      {row.Status || "Unknown"}
                     </span>
                   </td>
-
-                  {/* Amount */}
-                  <td className="px-8 py-4 text-[13px] font-bold text-gray-900">
-                    ${Number(row.TotalAmount || 0).toLocaleString("en-US")}
+ 
+                  <td className="whitespace-nowrap px-6 py-4 text-[13px] font-bold text-gray-900">
+                    {formatCurrency(row.TotalAmount)}
                   </td>
-
-                  {/* Date */}
-                  <td className="px-8 py-4 text-[13px] font-medium text-gray-900">
-                    {new Date(row.CreatedUtc).toLocaleDateString("en-US")}
+ 
+                  <td className="whitespace-nowrap px-6 py-4 text-[13px] font-medium text-gray-700">
+                    {formatDate(row.CreatedUtc)}
                   </td>
-
                 </tr>
               ))}
             </tbody>
-
           </table>
         </div>
       )}

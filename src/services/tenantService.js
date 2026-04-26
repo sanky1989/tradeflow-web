@@ -1,40 +1,19 @@
 import api from "../utils/api";
-
+ 
+const unwrapApiResponse = (response, fallbackMessage) => {
+  if (!response?.data?.Success) {
+    throw new Error(response?.data?.Message || fallbackMessage);
+  }
+ 
+  return response.data;
+};
+ 
 export const getTenantLimits = async () => {
-  try {
-    const res = await api.get("/tenants/current/limits");
-    if (!res.data.Success) {
-      throw new Error(res.data.Message || "Failed to fetch limits");
-    }
-    return res.data;
-  } catch (error) {
-    console.error("Tenant Limits Error:", error);
-    throw error;
-  }
+  const res = await api.get("/tenants/current/limits");
+  return unwrapApiResponse(res, "Failed to fetch tenant limits");
 };
-
+ 
 export const getTenantUsage = async () => {
-  try {
-    const res = await api.get("/tenants/current/usage");
-    if (!res.data.Success) {
-      throw new Error(res.data.Message || "Failed to fetch usage");
-    }
-    return res.data;
-  } catch (error) {
-    console.error("Tenant Usage Error:", error);
-    throw error;
-  }
-};
-
-export const getashboard = async () => {
-  try {
-    const res = await api.get("/dashboard/summary");
-    if (!res.data.Success) {
-      throw new Error(res.data.Message || "Failed to fetch usage");
-    }
-    return res.data;
-  } catch (error) {
-    console.error("Tenant Usage Error:", error);
-    throw error;
-  }
+  const res = await api.get("/tenants/current/usage");
+  return unwrapApiResponse(res, "Failed to fetch tenant usage");
 };
