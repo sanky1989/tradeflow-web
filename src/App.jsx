@@ -11,6 +11,7 @@ import { useAuth } from "./context/AuthContext";
 import Loader from "./components/common/Loader";
 import { Toaster } from "react-hot-toast";
 import CustomerCreate from "./pages/customers/CustomerCreate";
+import Inventory from "./pages/inventory/Inventory";
 
 
 //NEW: PublicRoute
@@ -50,6 +51,7 @@ function App() {
           <Route path="/customers/:id/edit" element={<CustomerEdit />} />
           <Route path="/customers/new" element={<CustomerCreate />} />
           <Route path="/customers/:id/add-site" element={<CustomerAddSite />} />
+          <Route path="/inventory" element={<Inventory />} />
         </Route>
       </Routes>
     </BrowserRouter></>
