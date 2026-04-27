@@ -11,9 +11,37 @@ export const productService = {
     return res.data;
   },
 
-  create: async (payload) => {
-    const res = await api.post("/products", payload);
-    return res.data;
+create: async (payload) => {
+    try {
+      const res = await api.post("/products", payload);
+      if (!res.data.Success && !res.data.success) {
+        throw {
+          message: res.data.Message || res.data.message,
+          errors: res.data.Errors || res.data.errors,
+        };
+      }
+
+      return res.data;
+
+    } catch (error) {
+      // 🔥 BACKEND ERROR (THIS IS YOUR CASE)
+      if (error.response) {
+        throw {
+          message:
+            error.response.data?.Message ||
+            error.response.data?.message ||
+            "Something went wrong",
+          errors:
+            error.response.data?.Errors ||
+            error.response.data?.errors ||
+            null,
+        };
+      }
+      throw {
+        message: error.message || "Network error",
+        errors: null,
+      };
+    }
   },
 
   update: async (id, payload) => {
