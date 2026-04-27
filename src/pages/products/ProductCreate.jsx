@@ -166,15 +166,20 @@ function ProductCreate() {
 
         {/* CHECKBOX */}
         <div className="flex items-center gap-2 mt-6">
+        <label className="w-full inline-flex cursor-pointer items-center gap-3 rounded-lg border border-gray-300 bg-white p-2">
           <input
             type="checkbox"
             name="IsStockTracked"
             checked={form.IsStockTracked}
             onChange={handleChange}
-            id="IsStockTracked"
+            className="h-4 w-4 cursor-pointer accent-accent"
           />
-          <label for="IsStockTracked" className="text-sm text-black">Track Stock</label>
-        </div>
+          <div>
+            <span className="text-sm font-bold text-black">
+            Track Stock</span>         
+          </div>
+        </label>
+             </div>
 
         {/* SUBMIT */}
         <div className="md:col-span-2 flex justify-end gap-3">
