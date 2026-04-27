@@ -14,8 +14,7 @@ import { Toaster } from "react-hot-toast";
 import Products from "./pages/products/Products";
 import ProductCreate from "./pages/products/ProductCreate";
 import ProductEdit from "./pages/products/ProductEdit";
-import CustomerCreate from "./pages/customers/CustomerCreate";
-import Inventory from "./pages/inventory/Inventory";
+import Inventory from "./pages/inventory/Inventory"; 
 
 
 //NEW: PublicRoute
