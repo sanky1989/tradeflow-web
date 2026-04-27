@@ -1,12 +1,11 @@
-import React, { useState, useRef, useEffect } from "react";
-import RecentTable from "../../components/dashboard/RecentTable";
 import StatsGrid from "../../components/dashboard/StatsGrid";
+import RecentTable from "../../components/dashboard/RecentTable";
 
 export default function Dashboard() {
   return (
-          <>
-          <StatsGrid />
-          <RecentTable />
-          </>
+    <div className="space-y-6">
+      <StatsGrid />
+      <RecentTable />
+    </div>
   );
 }

@@ -14,6 +14,8 @@ import { Toaster } from "react-hot-toast";
 import Products from "./pages/products/Products";
 import ProductCreate from "./pages/products/ProductCreate";
 import ProductEdit from "./pages/products/ProductEdit";
+import CustomerCreate from "./pages/customers/CustomerCreate";
+import Inventory from "./pages/inventory/Inventory";
 
 
 //NEW: PublicRoute
@@ -56,6 +58,7 @@ function App() {
           <Route path="/products" element={<Products />} />
           <Route path="/products/new" element={<ProductCreate />} />
           <Route path="/products/:id/edit" element={<ProductEdit />} />
+          <Route path="/inventory" element={<Inventory />} />
         </Route>
       </Routes>
     </BrowserRouter></>
