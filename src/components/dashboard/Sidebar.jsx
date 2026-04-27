@@ -1,5 +1,5 @@
 import React from "react";
-import { LayoutDashboard, FileText, Package, Users, TrendingUp } from "lucide-react";
+import { LayoutDashboard, FileText, Package, Truck, Users, TrendingUp } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -8,6 +8,7 @@ const NAV_ITEMS = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
   { id: "customers", label: "Customers", icon: Users },
   { id: "products", label: "Products", icon: Package },
+  { id: "suppliers", label: "Suppliers", icon: Truck },
   { id: "inventory", label: "Inventory", icon: Package },
   { id: "quotes", label: "Quotes", icon: FileText },
   { id: "analytics", label: "Analytics", icon: TrendingUp },
@@ -23,6 +24,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
     dashboard: "/dashboard",
     customers: "/customers",
     products: "/products",
+    suppliers: "/suppliers",
     inventory: "/inventory",
     quotes: "/quotes",
     analytics: "/analytics",

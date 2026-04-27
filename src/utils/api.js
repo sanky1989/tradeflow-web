@@ -12,4 +12,22 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const status = error?.response?.status;
+    const url = error?.config?.url || "";
+    const isLoginAttempt = url.includes("/auth/login");
+
+    if (status === 401 && !isLoginAttempt) {
+      localStorage.removeItem("token");
+      sessionStorage.removeItem("token");
+      if (window.location.pathname !== "/") {
+        window.location.replace("/");
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
 export default api;

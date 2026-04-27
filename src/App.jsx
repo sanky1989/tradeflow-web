@@ -15,6 +15,10 @@ import Products from "./pages/products/Products";
 import ProductCreate from "./pages/products/ProductCreate";
 import ProductEdit from "./pages/products/ProductEdit";
 import Inventory from "./pages/inventory/Inventory"; 
+import Suppliers from "./pages/suppliers/Suppliers";
+import SupplierCreate from "./pages/suppliers/SupplierCreate";
+import SupplierDetails from "./pages/suppliers/SupplierDetails";
+import SupplierEdit from "./pages/suppliers/SupplierEdit";
 
 
 //NEW: PublicRoute
@@ -58,6 +62,10 @@ function App() {
           <Route path="/products/new" element={<ProductCreate />} />
           <Route path="/products/:id/edit" element={<ProductEdit />} />
           <Route path="/inventory" element={<Inventory />} />
+          <Route path="/suppliers" element={<Suppliers />} />
+          <Route path="/suppliers/new" element={<SupplierCreate />} />
+          <Route path="/suppliers/:id" element={<SupplierDetails />} />
+          <Route path="/suppliers/:id/edit" element={<SupplierEdit />} />
         </Route>
       </Routes>
     </BrowserRouter></>
