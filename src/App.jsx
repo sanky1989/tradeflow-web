@@ -5,12 +5,15 @@ import Customers from "./pages/customers/Customers";
 import CustomerDetails from "./pages/customers/CustomerDetails";
 import CustomerEdit from "./pages/customers/CustomeUpdates";
 import CustomerAddSite from "./pages/customers/CustomerAddSite";
+import CustomerCreate from "./pages/customers/CustomerCreate";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import DashboardLayout from "./layouts/DashboardLayout";
 import { useAuth } from "./context/AuthContext";
 import Loader from "./components/common/Loader";
 import { Toaster } from "react-hot-toast";
-import CustomerCreate from "./pages/customers/CustomerCreate";
+import Products from "./pages/products/Products";
+import ProductCreate from "./pages/products/ProductCreate";
+import ProductEdit from "./pages/products/ProductEdit";
 
 
 //NEW: PublicRoute
@@ -50,6 +53,9 @@ function App() {
           <Route path="/customers/:id/edit" element={<CustomerEdit />} />
           <Route path="/customers/new" element={<CustomerCreate />} />
           <Route path="/customers/:id/add-site" element={<CustomerAddSite />} />
+          <Route path="/products" element={<Products />} />
+          <Route path="/products/new" element={<ProductCreate />} />
+          <Route path="/products/:id/edit" element={<ProductEdit />} />
         </Route>
       </Routes>
     </BrowserRouter></>

@@ -7,6 +7,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 const NAV_ITEMS = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
   { id: "customers", label: "Customers", icon: Users },
+  { id: "products", label: "Products", icon: Package },
   { id: "inventory", label: "Inventory", icon: Package },
   { id: "quotes", label: "Quotes", icon: FileText },
   { id: "analytics", label: "Analytics", icon: TrendingUp },
@@ -21,6 +22,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
   const pathMap = {
     dashboard: "/dashboard",
     customers: "/customers",
+    products: "/products",
     inventory: "/inventory",
     quotes: "/quotes",
     analytics: "/analytics",

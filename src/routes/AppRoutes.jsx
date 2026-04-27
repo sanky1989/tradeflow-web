@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "../pages/auth/Login";
 import Dashboard from "../pages/dashboard/Dashboard";
 import Customers from "../pages/customers/Customers";
+import Products from "../pages/products/Products";
 import ProtectedRoute from "../routes/ProtectedRoute";
 
 function AppRoutes() {
@@ -22,6 +23,14 @@ function AppRoutes() {
           element={
             <ProtectedRoute>
               <Customers />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/products"
+          element={
+            <ProtectedRoute>
+              <Products />
             </ProtectedRoute>
           }
         />
