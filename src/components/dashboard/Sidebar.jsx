@@ -13,6 +13,7 @@ const NAV_ITEMS = [
   { id: "quotes", label: "Quotes", icon: FileText },
   { id: "analytics", label: "Analytics", icon: TrendingUp },
   { id: "team", label: "Team", icon: Users },
+  { id: "users", label: "Users", icon: Users },
 ];
 
 export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
@@ -29,6 +30,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
     quotes: "/quotes",
     analytics: "/analytics",
     team: "/team",
+    users: "/users",
   };
 
   return (

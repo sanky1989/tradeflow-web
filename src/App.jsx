@@ -20,6 +20,9 @@ import Suppliers from "./pages/suppliers/Suppliers";
 import SupplierCreate from "./pages/suppliers/SupplierCreate";
 import SupplierDetails from "./pages/suppliers/SupplierDetails";
 import SupplierEdit from "./pages/suppliers/SupplierEdit";
+import Users from "./pages/users/Users";
+import UserCreate from "./pages/users/UserCreate";
+import UserDetails from "./pages/users/UserDetails";
 
 
 //NEW: PublicRoute
@@ -68,6 +71,9 @@ function App() {
           <Route path="/suppliers/new" element={<SupplierCreate />} />
           <Route path="/suppliers/:id" element={<SupplierDetails />} />
           <Route path="/suppliers/:id/edit" element={<SupplierEdit />} />
+          <Route path="/users" element={<Users />} />
+          <Route path="/users/new" element={<UserCreate />} />
+          <Route path="/users/:id" element={<UserDetails />} />
         </Route>
       </Routes>
     </BrowserRouter></>

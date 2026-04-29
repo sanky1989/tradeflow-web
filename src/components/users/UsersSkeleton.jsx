@@ -7,20 +7,12 @@ function HeaderSkeleton({ withButton = true }) {
         <Skeleton className="h-7 w-40" />
         <Skeleton className="h-4 w-72" />
       </div>
-      {withButton && <Skeleton className="h-9 w-36" />}
+      {withButton && <Skeleton className="h-9 w-32" />}
     </div>
   );
 }
 
-function SearchBarSkeleton() {
-  return (
-    <div className="rounded-xl border border-gray-300 bg-white p-4">
-      <Skeleton className="h-9 w-full" />
-    </div>
-  );
-}
-
-function TableSkeleton({ rows = 6, columns = 6 }) {
+function TableSkeleton({ rows = 6, columns = 5 }) {
   return (
     <div className="overflow-hidden rounded-xl border border-gray-300 bg-white">
       <div className="border-b border-gray-300 px-8 py-4">
@@ -47,47 +39,15 @@ function TableSkeleton({ rows = 6, columns = 6 }) {
           </div>
         ))}
       </div>
-      <div className="flex items-center justify-between border-t border-gray-300 px-4 py-4">
-        <Skeleton className="h-3 w-48" />
-        <div className="flex gap-2">
-          <Skeleton className="h-7 w-20" />
-          <Skeleton className="h-7 w-24" />
-          <Skeleton className="h-7 w-20" />
-        </div>
-      </div>
     </div>
   );
 }
 
-export function SuppliersListSkeleton() {
+export function UsersListSkeleton() {
   return (
     <div className="space-y-6">
       <HeaderSkeleton />
-      <SearchBarSkeleton />
       <TableSkeleton />
-    </div>
-  );
-}
-
-export function SupplierDetailsSkeleton() {
-  return (
-    <div className="mx-auto max-w-4xl space-y-6">
-      <div>
-        <Skeleton className="mb-3 h-4 w-36" />
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div className="space-y-2">
-            <Skeleton className="h-7 w-56" />
-            <Skeleton className="h-4 w-48" />
-          </div>
-          <Skeleton className="h-9 w-20" />
-        </div>
-      </div>
-
-      <div className="rounded-2xl border border-gray-200 bg-white px-6 pb-6 pt-2 sm:px-8">
-        <SettingsSectionSkeleton fields={2} />
-        <SettingsSectionSkeleton fields={2} />
-        <SettingsSectionSkeleton fields={1} />
-      </div>
     </div>
   );
 }
@@ -111,20 +71,39 @@ function SettingsSectionSkeleton({ fields = 2 }) {
   );
 }
 
-export function SupplierFormSkeleton() {
+export function UserFormSkeleton() {
   return (
     <div className="mx-auto max-w-4xl space-y-6">
       <HeaderSkeleton />
-
       <div className="rounded-2xl border border-gray-200 bg-white px-6 pb-6 pt-2 sm:px-8">
         <SettingsSectionSkeleton fields={2} />
         <SettingsSectionSkeleton fields={2} />
-        <SettingsSectionSkeleton fields={1} />
-
+        <SettingsSectionSkeleton fields={2} />
         <div className="mt-6 flex justify-end gap-3">
           <Skeleton className="h-9 w-20" />
           <Skeleton className="h-9 w-32" />
         </div>
+      </div>
+    </div>
+  );
+}
+
+export function UserDetailsSkeleton() {
+  return (
+    <div className="mx-auto max-w-4xl space-y-6">
+      <div>
+        <Skeleton className="mb-3 h-4 w-36" />
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="space-y-2">
+            <Skeleton className="h-7 w-56" />
+            <Skeleton className="h-4 w-48" />
+          </div>
+        </div>
+      </div>
+      <div className="rounded-2xl border border-gray-200 bg-white px-6 pb-6 pt-2 sm:px-8">
+        <SettingsSectionSkeleton fields={2} />
+        <SettingsSectionSkeleton fields={2} />
+        <SettingsSectionSkeleton fields={2} />
       </div>
     </div>
   );

@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, Mail, Pencil, Phone, Truck, User } from "lucide-react";
+import { ArrowLeft, Pencil } from "lucide-react";
 import { SupplierDetailsSkeleton } from "../../components/suppliers/SuppliersSkeleton";
 import ErrorBanner from "../../components/common/ErrorBanner";
-import StatusPill from "../../components/common/StatusPill";
+import SettingsSection from "../../components/common/SettingsSection";
+import Toggle from "../../components/common/Toggle";
 import { supplierService } from "../../services/supplierService";
 import { getApiErrorMessage } from "../../utils/apiError";
 
@@ -55,67 +56,78 @@ export default function SupplierDetails() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <button
-            type="button"
-            onClick={() => navigate("/suppliers")}
-            className="mb-3 inline-flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-black"
-          >
-            <ArrowLeft size={16} /> Back to Suppliers
-          </button>
-          <div className="flex items-center gap-3">
+    <div className="mx-auto max-w-4xl space-y-6">
+      <div>
+        <button
+          type="button"
+          onClick={() => navigate("/suppliers")}
+          className="mb-3 inline-flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-black"
+        >
+          <ArrowLeft size={16} /> Back to Suppliers
+        </button>
+
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
             <h2 className="text-2xl font-bold tracking-tight text-black">
               {supplier.Name || "Unnamed Supplier"}
             </h2>
-            <StatusPill isActive={supplier.IsActive} />
+            <p className="mt-1 text-sm text-gray-600">
+              {supplier.ContactName
+                ? `Primary contact: ${supplier.ContactName}`
+                : "No primary contact captured"}
+            </p>
           </div>
-          <p className="mt-1 text-sm text-gray-700">
-            {supplier.ContactName ? `Primary contact: ${supplier.ContactName}` : "No primary contact captured"}
-          </p>
-        </div>
-
-        <div className="flex flex-wrap gap-2">
           <button
             onClick={() => navigate(`/suppliers/${id}/edit`)}
-            className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-bold text-black hover:bg-gray-50"
+            className="inline-flex w-fit items-center gap-2 self-start rounded-lg bg-accent px-4 py-2 text-sm font-bold text-white hover:opacity-90 sm:self-auto"
           >
-            <Pencil size={16} /> Edit
+            <Pencil size={14} /> Edit
           </button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <InfoCard title="Supplier">
-          <InfoRow icon={<Truck size={16} />} label="Name" value={supplier.Name} />
-          <InfoRow icon={<User size={16} />} label="Contact" value={supplier.ContactName} />
-        </InfoCard>
+      <div className="rounded-2xl border border-gray-200 bg-white px-6 pb-6 pt-2 shadow-sm sm:px-8">
+        <SettingsSection
+          title="Supplier Profile"
+          description="Basic details that identify this supplier."
+        >
+          <ReadOnlyField label="Supplier Name" value={supplier.Name} />
+          <ReadOnlyField label="Contact Name" value={supplier.ContactName} />
+        </SettingsSection>
 
-        <InfoCard title="Contact Details">
-          <InfoRow icon={<Mail size={16} />} label="Email" value={supplier.Email} />
-          <InfoRow icon={<Phone size={16} />} label="Phone" value={supplier.Phone} />
-        </InfoCard>
+        <SettingsSection
+          title="Contact Details"
+          description="How you'll reach this supplier."
+        >
+          <ReadOnlyField label="Email" value={supplier.Email} />
+          <ReadOnlyField label="Phone" value={supplier.Phone} />
+        </SettingsSection>
+
+        <SettingsSection
+          title="Status"
+          description="Inactive suppliers won't appear in selection lists."
+        >
+          <Toggle
+            checked={!!supplier.IsActive}
+            disabled
+            label={supplier.IsActive ? "Active" : "Inactive"}
+            description={
+              supplier.IsActive
+                ? "This supplier is available for use."
+                : "This supplier is hidden from selection lists."
+            }
+          />
+        </SettingsSection>
       </div>
     </div>
   );
 }
 
-const InfoCard = ({ title, children }) => (
-  <div className="rounded-xl border border-gray-300 bg-white p-6">
-    <h3 className="mb-4 text-base font-semibold text-gray-900">{title}</h3>
-    <div className="space-y-4">{children}</div>
-  </div>
-);
-
-const InfoRow = ({ icon, label, value }) => (
-  <div className="flex gap-3">
-    <div className="mt-0.5 text-gray-600">{icon}</div>
-    <div>
-      <div className="text-xs font-semibold uppercase tracking-widest text-gray-500">
-        {label}
-      </div>
-      <div className="mt-1 text-sm font-medium text-black">{value || "-"}</div>
+const ReadOnlyField = ({ label, value }) => (
+  <div className="space-y-1">
+    <p className="text-[14px] text-black">{label}</p>
+    <div className="rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-black">
+      {value || <span className="text-gray-400">—</span>}
     </div>
   </div>
 );
