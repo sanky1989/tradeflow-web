@@ -65,6 +65,9 @@ function ProductCreate() {
     if (!form.SellPrice) e.SellPrice = "Sell price required";
     if (!form.SupplierId) e.SupplierId = "Supplier required";
 
+    // 🔥 Check if stock tracking is selected
+    if (!form.IsStockTracked) e.IsStockTracked = "Please select if stock is tracked";
+
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -109,10 +112,9 @@ function ProductCreate() {
 
   return (
     <div className="space-y-6">
-
       {/* HEADER */}
       <div className="flex justify-between items-center">
-         <div>
+        <div>
           <h2 className="text-2xl font-bold tracking-tight text-black">Create Product</h2>
           <p className="mt-1 text-sm text-gray-700">Create a new product</p>
         </div>
@@ -134,7 +136,6 @@ function ProductCreate() {
         <Input label="Product Code" name="ProductCode" value={form.ProductCode} onChange={handleChange} error={errors.ProductCode} />
         <Input label="Category" name="Category" value={form.Category} onChange={handleChange} error={errors.Category} />
         <Input label="Product Type" name="ProductType" value={form.ProductType} onChange={handleChange} error={errors.ProductType} />
-
         <Input label="Base Cost" name="BaseCost" value={form.BaseCost} onChange={handleChange} error={errors.BaseCost} />
         <Input label="Sell Price" name="SellPrice" value={form.SellPrice} onChange={handleChange} error={errors.SellPrice} />
 
@@ -165,21 +166,25 @@ function ProductCreate() {
         </div>
 
         {/* CHECKBOX */}
-        <div className="flex items-center gap-2 mt-6">
-        <label className="w-full inline-flex cursor-pointer items-center gap-3 rounded-lg border border-gray-300 bg-white p-2">
-          <input
-            type="checkbox"
-            name="IsStockTracked"
-            checked={form.IsStockTracked}
-            onChange={handleChange}
-            className="h-4 w-4 cursor-pointer accent-accent"
-          />
-          <div>
-            <span className="text-sm font-bold text-black">
-            Track Stock</span>         
-          </div>
-        </label>
-             </div>
+        <div className=" items-center gap-2 mt-6 space-y-1">
+          <label className="w-full inline-flex cursor-pointer items-center gap-3 rounded-lg border border-gray-300 bg-white p-2">
+            <input
+              type="checkbox"
+              name="IsStockTracked"
+              checked={form.IsStockTracked}
+              onChange={handleChange}
+              className="h-4 w-4 cursor-pointer accent-accent"
+            />
+            <div>
+              <span className="text-sm font-bold text-black">
+                Track Stock
+              </span>
+            </div>
+          </label>
+          {errors.IsStockTracked && (
+            <p className="w-full text-xs text-red-500">{errors.IsStockTracked}</p>
+          )}
+        </div>
 
         {/* SUBMIT */}
         <div className="md:col-span-2 flex justify-end gap-3">

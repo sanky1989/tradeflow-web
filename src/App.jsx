@@ -14,6 +14,7 @@ import { Toaster } from "react-hot-toast";
 import Products from "./pages/products/Products";
 import ProductCreate from "./pages/products/ProductCreate";
 import ProductEdit from "./pages/products/ProductEdit";
+import ProductDetail from "./pages/products/ProductDetail";
 import Inventory from "./pages/inventory/Inventory"; 
 import Suppliers from "./pages/suppliers/Suppliers";
 import SupplierCreate from "./pages/suppliers/SupplierCreate";
@@ -61,6 +62,7 @@ function App() {
           <Route path="/products" element={<Products />} />
           <Route path="/products/new" element={<ProductCreate />} />
           <Route path="/products/:id/edit" element={<ProductEdit />} />
+          <Route path="/products/:id" element={<ProductDetail />} />
           <Route path="/inventory" element={<Inventory />} />
           <Route path="/suppliers" element={<Suppliers />} />
           <Route path="/suppliers/new" element={<SupplierCreate />} />

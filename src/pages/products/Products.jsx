@@ -148,9 +148,6 @@ export default function Products() {
                   <tr key={p.Id} className="group cursor-pointer transition-colors hover:bg-gray-50">
                     <td className="px-8 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-accent text-white">
-                          <User size={14} />
-                        </div>
                         <div>
                           <span className="text-[13px] font-bold text-black">
                             {getProductName(p)}
