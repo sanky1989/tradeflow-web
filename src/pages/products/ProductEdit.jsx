@@ -187,16 +187,20 @@ function ProductEdit() {
         </div>
 
         {/* STOCK CHECKBOX */}
-        <div className="mt-6 space-y-1 ">
-          <label className="w-full inline-flex items-center gap-3 rounded-lg border border-gray-300 bg-white p-2 cursor-pointer">
+        <div className="mt-7 space-y-1 ">
+          <label className="w-full inline-flex cursor-pointer items-center gap-3 rounded-lg border border-gray-300 bg-white p-2">
             <input
               type="checkbox"
               name="IsStockTracked"
               checked={form.IsStockTracked}
               onChange={handleChange}
-              className="h-4 w-4 accent-accent"
+              className="h-4 w-4 cursor-pointer accent-accent"
             />
-            <span className="text-sm font-bold text-black">Track Stock</span>
+            <div>
+              <span className="text-sm  text-black">
+                Track Stock
+              </span>
+            </div>
           </label>
 
           {errors.IsStockTracked && <p className="text-xs text-red-500">{errors.IsStockTracked}</p>}  {/* Display error for checkbox */}

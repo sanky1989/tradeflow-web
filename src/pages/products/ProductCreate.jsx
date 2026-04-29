@@ -166,7 +166,7 @@ function ProductCreate() {
         </div>
 
         {/* CHECKBOX */}
-        <div className=" items-center gap-2 mt-6 space-y-1">
+        <div className="mt-7 space-y-1">
           <label className="w-full inline-flex cursor-pointer items-center gap-3 rounded-lg border border-gray-300 bg-white p-2">
             <input
               type="checkbox"
@@ -176,7 +176,7 @@ function ProductCreate() {
               className="h-4 w-4 cursor-pointer accent-accent"
             />
             <div>
-              <span className="text-sm font-bold text-black">
+              <span className="text-sm  text-black">
                 Track Stock
               </span>
             </div>
