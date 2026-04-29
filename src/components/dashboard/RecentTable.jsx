@@ -13,8 +13,13 @@ const formatCurrency = (value) =>
  
 const formatDate = (value) => {
   if (!value) return "-";
- 
-  return new Date(value).toLocaleDateString("en-AU", {
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) return "-";
+
+  return date.toLocaleDateString("en-AU", {
+    timeZone: "Australia/Melbourne",
     day: "2-digit",
     month: "short",
     year: "numeric",
@@ -161,7 +166,14 @@ export default function RecentTable() {
                   </td>
  
                   <td className="whitespace-nowrap px-6 py-4 text-[13px] font-medium text-gray-700">
-                    {formatDate(row.CreatedUtc)}
+                   {formatDate(
+                      row.CreatedUtc ||
+                      row.createdUtc ||
+                      row.CreatedDate ||
+                      row.createdDate ||
+                      row.CreatedAt ||
+                      row.createdAt
+                    )}
                   </td>
                 </tr>
               ))}

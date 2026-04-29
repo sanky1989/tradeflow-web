@@ -12,6 +12,7 @@ import Loader from "./components/common/Loader";
 import { Toaster } from "react-hot-toast";
 import CustomerCreate from "./pages/customers/CustomerCreate";
 import Inventory from "./pages/inventory/Inventory";
+import QuoteBuilder from "./pages/quotes/QuoteBuilder";
 
 
 //NEW: PublicRoute
@@ -52,6 +53,7 @@ function App() {
           <Route path="/customers/new" element={<CustomerCreate />} />
           <Route path="/customers/:id/add-site" element={<CustomerAddSite />} />
           <Route path="/inventory" element={<Inventory />} />
+          <Route path="/quote-builder" element={<QuoteBuilder />} />
         </Route>
       </Routes>
     </BrowserRouter></>
