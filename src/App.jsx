@@ -5,13 +5,21 @@ import Customers from "./pages/customers/Customers";
 import CustomerDetails from "./pages/customers/CustomerDetails";
 import CustomerEdit from "./pages/customers/CustomeUpdates";
 import CustomerAddSite from "./pages/customers/CustomerAddSite";
+import CustomerCreate from "./pages/customers/CustomerCreate";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import DashboardLayout from "./layouts/DashboardLayout";
 import { useAuth } from "./context/AuthContext";
 import Loader from "./components/common/Loader";
 import { Toaster } from "react-hot-toast";
-import CustomerCreate from "./pages/customers/CustomerCreate";
-import Inventory from "./pages/inventory/Inventory";
+import Products from "./pages/products/Products";
+import ProductCreate from "./pages/products/ProductCreate";
+import ProductEdit from "./pages/products/ProductEdit";
+import ProductDetail from "./pages/products/ProductDetail";
+import Inventory from "./pages/inventory/Inventory"; 
+import Suppliers from "./pages/suppliers/Suppliers";
+import SupplierCreate from "./pages/suppliers/SupplierCreate";
+import SupplierDetails from "./pages/suppliers/SupplierDetails";
+import SupplierEdit from "./pages/suppliers/SupplierEdit";
 import QuoteBuilder from "./pages/quotes/QuoteBuilder";
 
 
@@ -52,7 +60,15 @@ function App() {
           <Route path="/customers/:id/edit" element={<CustomerEdit />} />
           <Route path="/customers/new" element={<CustomerCreate />} />
           <Route path="/customers/:id/add-site" element={<CustomerAddSite />} />
+          <Route path="/products" element={<Products />} />
+          <Route path="/products/new" element={<ProductCreate />} />
+          <Route path="/products/:id/edit" element={<ProductEdit />} />
+          <Route path="/products/:id" element={<ProductDetail />} />
           <Route path="/inventory" element={<Inventory />} />
+          <Route path="/suppliers" element={<Suppliers />} />
+          <Route path="/suppliers/new" element={<SupplierCreate />} />
+          <Route path="/suppliers/:id" element={<SupplierDetails />} />
+          <Route path="/suppliers/:id/edit" element={<SupplierEdit />} />
           <Route path="/quote-builder" element={<QuoteBuilder />} />
         </Route>
       </Routes>

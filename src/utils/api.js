@@ -17,19 +17,20 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// handle 401
 api.interceptors.response.use(
-  (res) => res,
+  (response) => response,
   (error) => {
-    if (error?.response?.status === 401) {
-      localStorage.clear();
-      sessionStorage.clear();
+    const status = error?.response?.status;
+    const url = error?.config?.url || "";
+    const isLoginAttempt = url.includes("/auth/login");
 
-      toast.error("Session expired. Please login again.");
-
-      window.location.href = "/";
+    if (status === 401 && !isLoginAttempt) {
+      localStorage.removeItem("token");
+      sessionStorage.removeItem("token");
+      if (window.location.pathname !== "/") {
+        window.location.replace("/");
+      }
     }
-
     return Promise.reject(error);
   }
 );
