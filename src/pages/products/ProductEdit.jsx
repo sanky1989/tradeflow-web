@@ -187,8 +187,8 @@ function ProductEdit() {
         </div>
 
         {/* STOCK CHECKBOX */}
-        <div className="mt-6 space-y-1">
-          <label className="inline-flex items-center gap-3 rounded-lg border border-gray-300 bg-white p-2 cursor-pointer">
+        <div className="mt-6 space-y-1 ">
+          <label className="w-full inline-flex items-center gap-3 rounded-lg border border-gray-300 bg-white p-2 cursor-pointer">
             <input
               type="checkbox"
               name="IsStockTracked"
