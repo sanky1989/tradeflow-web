@@ -1,5 +1,5 @@
-import { Truck, Eye, Pencil, Plus } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Search, Truck, Eye, Pencil, Plus } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supplierService } from "../../services/supplierService";
 import { SuppliersListSkeleton } from "../../components/suppliers/SuppliersSkeleton";
@@ -11,6 +11,7 @@ const ITEMS_PER_PAGE = 10;
 
 export default function Suppliers() {
   const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState("");
   const [suppliers, setSuppliers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -35,9 +36,26 @@ export default function Suppliers() {
     loadSuppliers();
   }, []);
 
-  const totalPages = Math.max(1, Math.ceil(suppliers.length / ITEMS_PER_PAGE));
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setCurrentPage(1);
+  }, [searchQuery]);
+
+  const filtered = useMemo(() => {
+    const term = searchQuery.trim().toLowerCase();
+    if (!term) return suppliers;
+    return suppliers.filter((s) => {
+      const haystack = [s.Name, s.ContactName, s.Email, s.Phone]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+      return haystack.includes(term);
+    });
+  }, [suppliers, searchQuery]);
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE));
   const startIdx = (currentPage - 1) * ITEMS_PER_PAGE;
-  const paginated = suppliers.slice(startIdx, startIdx + ITEMS_PER_PAGE);
+  const paginated = filtered.slice(startIdx, startIdx + ITEMS_PER_PAGE);
 
   if (loading) return <SuppliersListSkeleton />;
 
@@ -57,6 +75,19 @@ export default function Suppliers() {
           <Plus size={16} />
           New Supplier
         </button>
+      </div>
+
+      <div className="flex flex-col gap-3 rounded-xl border border-gray-300 bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="relative w-full">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-black" size={16} />
+          <input
+            type="text"
+            placeholder="Search supplier name, contact, email or phone..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full rounded-lg border border-gray-300 bg-white py-2 pl-10 pr-4 text-sm text-black placeholder:text-gray-500 focus:border-gray-400 focus:outline-none focus:ring-0"
+          />
+        </div>
       </div>
 
       {error && (
@@ -126,7 +157,7 @@ export default function Suppliers() {
                     <div className="mx-auto max-w-sm">
                       <h3 className="text-sm font-bold text-black">No suppliers found</h3>
                       <p className="mt-1 text-sm text-gray-600">
-                        Create your first supplier to get started.
+                        Create your first supplier or change the search term.
                       </p>
                       <button
                         onClick={() => navigate("/suppliers/new")}
@@ -144,7 +175,7 @@ export default function Suppliers() {
 
         <div className="flex items-center justify-between border-t border-gray-300 bg-white p-4 text-[11px] text-black">
           <span>
-            Showing {paginated.length} of {suppliers.length} suppliers
+            Showing {paginated.length} of {filtered.length} suppliers
           </span>
           <div className="flex items-center gap-2">
             <button
@@ -155,11 +186,11 @@ export default function Suppliers() {
               Previous
             </button>
             <span className="px-2">
-              Page {suppliers.length === 0 ? 0 : currentPage} of {totalPages}
+              Page {filtered.length === 0 ? 0 : currentPage} of {totalPages}
             </span>
             <button
               onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-              disabled={currentPage === totalPages || suppliers.length === 0}
+              disabled={currentPage === totalPages || filtered.length === 0}
               className="rounded border border-gray-300 px-3 py-1 hover:bg-accent hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
             >
               Next

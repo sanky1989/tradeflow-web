@@ -15,11 +15,13 @@ import Products from "./pages/products/Products";
 import ProductCreate from "./pages/products/ProductCreate";
 import ProductEdit from "./pages/products/ProductEdit";
 import ProductDetail from "./pages/products/ProductDetail";
-import Inventory from "./pages/inventory/Inventory"; 
 import Suppliers from "./pages/suppliers/Suppliers";
 import SupplierCreate from "./pages/suppliers/SupplierCreate";
 import SupplierDetails from "./pages/suppliers/SupplierDetails";
 import SupplierEdit from "./pages/suppliers/SupplierEdit";
+import Users from "./pages/users/Users";
+import UserCreate from "./pages/users/UserCreate";
+import UserDetails from "./pages/users/UserDetails";
 import QuoteBuilder from "./pages/quotes/QuoteBuilder";
 
 
@@ -64,11 +66,13 @@ function App() {
           <Route path="/products/new" element={<ProductCreate />} />
           <Route path="/products/:id/edit" element={<ProductEdit />} />
           <Route path="/products/:id" element={<ProductDetail />} />
-          <Route path="/inventory" element={<Inventory />} />
           <Route path="/suppliers" element={<Suppliers />} />
           <Route path="/suppliers/new" element={<SupplierCreate />} />
           <Route path="/suppliers/:id" element={<SupplierDetails />} />
           <Route path="/suppliers/:id/edit" element={<SupplierEdit />} />
+          <Route path="/users" element={<Users />} />
+          <Route path="/users/new" element={<UserCreate />} />
+          <Route path="/users/:id" element={<UserDetails />} />
           <Route path="/quote-builder" element={<QuoteBuilder />} />
         </Route>
       </Routes>

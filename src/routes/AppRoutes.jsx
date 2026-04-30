@@ -4,6 +4,7 @@ import Dashboard from "../pages/dashboard/Dashboard";
 import Customers from "../pages/customers/Customers";
 import Products from "../pages/products/Products";
 import ProtectedRoute from "../routes/ProtectedRoute";
+import ProductComponentsPage from "../pages/products/ProductComponentsPage";
 
 function AppRoutes() {
   return (
@@ -34,6 +35,14 @@ function AppRoutes() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/products/:id/components"
+          element={
+            <ProtectedRoute>
+              <ProductComponentsPage />
+            </ProtectedRoute>
+          }
+/>
 
       </Routes>
     </BrowserRouter>

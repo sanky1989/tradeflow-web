@@ -9,10 +9,10 @@ const NAV_ITEMS = [
   { id: "customers", label: "Customers", icon: Users },
   { id: "products", label: "Products", icon: Package },
   { id: "suppliers", label: "Suppliers", icon: Truck },
-  { id: "inventory", label: "Inventory", icon: Package },
   { id: "quotes", label: "Quotes", icon: FileText },
   { id: "analytics", label: "Analytics", icon: TrendingUp },
   { id: "team", label: "Team", icon: Users },
+  { id: "users", label: "Users", icon: Users },
 ];
 
 export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
@@ -25,10 +25,10 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
     customers: "/customers",
     products: "/products",
     suppliers: "/suppliers",
-    inventory: "/inventory",
     quotes: "/quotes",
     analytics: "/analytics",
     team: "/team",
+    users: "/users",
   };
 
   return (
